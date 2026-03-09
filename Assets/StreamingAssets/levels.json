@@ -1,0 +1,53 @@
+{
+    "levels": [
+      {
+        "id": 0,
+        "currency": 0,
+        "purchase": true,
+        "purchase_car": true,
+        "imageFence": "Level1/забор_лес"
+      },
+      {
+        "id": 1,
+        "currency": 20,
+        "purchase": false,
+        "purchase_car": false,
+        "imageFence": "Level1/забор_сказка"
+      },
+      {
+        "id": 2,
+        "currency": 100,
+        "purchase": false,
+        "purchase_car": false,
+        "imageFence": "Level1/забор_лес"
+      },
+      {
+        "id": 3,
+        "currency": 150,
+        "purchase": false,
+        "purchase_car": false,
+        "imageFence": "Level1/забор_лес"
+      },
+      {
+        "id": 4,
+        "currency": 200,
+        "purchase": false,
+        "purchase_car": false,
+        "imageFence": "Level1/забор_лес"
+      },
+      {
+        "id": 5,
+        "currency": 300,
+        "purchase": false,
+        "purchase_car": false,
+        "imageFence": "Level1/забор_лес"
+      },
+      {
+        "id": 6,
+        "currency": 400,
+        "purchase": false,
+        "purchase_car": false,
+        "imageFence": "Level1/забор_лес"
+      }
+    ]
+  }
