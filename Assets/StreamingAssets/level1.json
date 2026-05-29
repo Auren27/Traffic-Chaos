@@ -2,132 +2,150 @@
     "level1": [
       {
         "id": 0,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_1",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня_поле",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "трава"
       },
       {
         "id": 1,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_0",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня1",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "прямая дорога"
       },
 
       {
         "id": 2,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_2",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня2",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 1_1"
       },
       {
         "id": 3,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_8",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня4",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 1_2 (прямая)"
       },
       {
         "id": 4,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_7",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня7",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 1_3"
       },
 
       {
         "id": 5,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_3",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня3",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 1_1"
       },
       {
         "id": 6,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_9",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня5",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 1_2 (прямая)"
       },
       {
         "id": 7,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_6",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня6",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 1_3"
       },
 
       {
         "id": 8,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_3_2",
-        "imageRoad_3": "Level1/дорога_трава_3_4",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня11",
+        "imageRoad_3": "Level1/дорога_пустыня12",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 2_1"
       },
       {
         "id": 9,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_1",
-        "imageRoad_3": "Level1/дорога_трава_3_5",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня_поле",
+        "imageRoad_3": "Level1/дорога_пустыня13",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 2_2"
       },
       {
         "id": 10,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_2_1",
-        "imageRoad_3": "Level1/дорога_трава_3_6",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня_поле",
+        "imageRoad_3": "Level1/дорога_пустыня1",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 2_3 (прямая)"
       },
       {
         "id": 11,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_3_8",
-        "imageRoad_3": "Level1/дорога_трава_3_7",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня9",
+        "imageRoad_3": "Level1/дорога_пустыня8",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 2_4"
       },
       {
         "id": 12,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_3_9",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня10",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога вправо 2_5"
       },
 
       {
         "id": 13,
-        "imageRoad_1": "Level1/дорога_трава_3_3",
-        "imageRoad_2": "Level1/дорога_трава_3_1",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня9",
+        "imageRoad_2": "Level1/дорога_пустыня8",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 2_1"
       },
       {
         "id": 14,
-        "imageRoad_1": "Level1/дорога_трава_4_1",
-        "imageRoad_2": "Level1/дорога_трава_2_1",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня10",
+        "imageRoad_2": "Level1/дорога_пустыня_поле",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 2_2"
       },
       {
         "id": 15,
-        "imageRoad_1": "Level1/дорога_трава_4_2",
-        "imageRoad_2": "Level1/дорога_трава_2_1",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня1",
+        "imageRoad_2": "Level1/дорога_пустыня_поле",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 2_3 (прямая)"
       },
       {
         "id": 16,
-        "imageRoad_1": "Level1/дорога_трава_4_3",
-        "imageRoad_2": "Level1/дорога_трава_4_4",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня11",
+        "imageRoad_2": "Level1/дорога_пустыня12",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 2_4"
       },
       {
         "id": 17,
-        "imageRoad_1": "Level1/дорога_трава_2_1",
-        "imageRoad_2": "Level1/дорога_трава_4_5",
-        "imageRoad_3": "Level1/дорога_трава_2_1",
+        "imageRoad_1": "Level1/дорога_пустыня_поле",
+        "imageRoad_2": "Level1/дорога_пустыня13",
+        "imageRoad_3": "Level1/дорога_пустыня_поле",
+        "imageRoad_4": "Level1/дорога_пустыня_поле",
         "description": "Дорога влево 2_5"
       }
     ]

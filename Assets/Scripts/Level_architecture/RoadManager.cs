@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class RoadManager : MonoBehaviour
 {
+    public Architecture architecture;
+
     [Header("Префаб дороги")]
     [SerializeField] private GameObject roadPrefab;
 
@@ -89,14 +91,50 @@ public class RoadManager : MonoBehaviour
                 fence.GetComponent<SpriteRenderer>().sprite = fenceSprite;
         }
 
+
+        //switch (architecture.activeNumberLevel)
+        //{
+        //    case 1:
+        //        {
+        //            var levelData = MODEL_WORLD.Instance.GetLevel1ById(roadType);
+        //            break;
+        //        }
+        //    case 2:
+        //        {
+        //            var levelData = MODEL_WORLD.Instance.GetLevel2ById(roadType);
+        //            break;
+        //        }
+        //    default: break;
+               
+        //}
+
+        MODEL_WORLD.RoadLevelDatabase targetDatabase = null;
+
+        switch (architecture.activeNumberLevel)
+        {
+            case 1: targetDatabase = MODEL_WORLD.Instance.level1Database; break;
+            case 2: targetDatabase = MODEL_WORLD.Instance.level2Database; break;
+            default: break;
+        }
+
+        // Универсальное получение данных для любого уровня
+        var levelData = MODEL_WORLD.Instance.GetRoadDataById(targetDatabase, roadType);
+
         // Текстуры дороги
-        var levelData = MODEL_WORLD.Instance.GetLevel1ById(roadType);
         SetupRoadTexture(roadComponents[roadIndex].background[0], levelData.imageRoad_2, 1);
         SetupRoadTexture(roadComponents[roadIndex].background[1], levelData.imageRoad_2, 0);
         SetupRoadTexture(roadComponents[roadIndex].background[2], levelData.imageRoad_1, 1);
         SetupRoadTexture(roadComponents[roadIndex].background[3], levelData.imageRoad_1, 0);
         SetupRoadTexture(roadComponents[roadIndex].background[4], levelData.imageRoad_3, 1);
         SetupRoadTexture(roadComponents[roadIndex].background[5], levelData.imageRoad_3, 0);
+        SetupRoadTexture(roadComponents[roadIndex].background[6], levelData.imageRoad_4, 1);
+        SetupRoadTexture(roadComponents[roadIndex].background[7], levelData.imageRoad_4, 0);
+        SetupRoadTexture(roadComponents[roadIndex].background[8], levelData.imageRoad_4, 1);
+        SetupRoadTexture(roadComponents[roadIndex].background[9], levelData.imageRoad_4, 0);
+        SetupRoadTexture(roadComponents[roadIndex].background[10], levelData.imageRoad_4, 1);
+        SetupRoadTexture(roadComponents[roadIndex].background[11], levelData.imageRoad_4, 0);
+        SetupRoadTexture(roadComponents[roadIndex].background[12], levelData.imageRoad_4, 1);
+        SetupRoadTexture(roadComponents[roadIndex].background[13], levelData.imageRoad_4, 0);
     }
 
     private void SetupRoadTexture(GameObject background, string texturePath, int spriteIndex)

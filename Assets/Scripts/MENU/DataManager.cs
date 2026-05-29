@@ -83,11 +83,11 @@ public class DataManager : MonoBehaviour
 
     public void Levels_Download()
     {
-        foreach (var item in UIManager.Instance.levels_bac)
-        {
-            item.SetActive(false);
-        }
-        UIManager.Instance.levels_bac[scene_active].SetActive(true);
+        //foreach (var item in UIManager.Instance.levels_bac)
+        //{
+        //    item.SetActive(false);
+        //}
+        //UIManager.Instance.levels_bac[scene_active].SetActive(true);
 
         Model_car.Instance.Download_model_car();
         UIManager.Instance.first_start_menu_menu.gameObject.SetActive(true);

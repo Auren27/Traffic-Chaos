@@ -136,11 +136,11 @@ public class UIManager : MonoBehaviour
         first_start_menu_menu.onClick.AddListener(() => GameManager.Instance.Start_menu());
 
         // Кнопки уровней
-        levels_1.onClick.AddListener(Level_1_Button);
-        levels_2.onClick.AddListener(Level_2_Button);
-        levels_3.onClick.AddListener(Level_3_Button);
-        levels_4.onClick.AddListener(Level_4_Button);
-        levels_5.onClick.AddListener(Level_5_Button);
+        //levels_1.onClick.AddListener(Level_1_Button);
+        //levels_2.onClick.AddListener(Level_2_Button);
+        //levels_3.onClick.AddListener(Level_3_Button);
+        //levels_4.onClick.AddListener(Level_4_Button);
+        //levels_5.onClick.AddListener(Level_5_Button);
     }
 
     public void ShowTab(int index)

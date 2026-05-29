@@ -271,35 +271,47 @@ public class MODEL_WORLD : MonoBehaviour
         return levelsDatabase.levels;
     }
 
-    //level1
-
-    [SerializeField] private Level1DatabaseCar level1Database; // Хранилище загруженных данных
-
+    // 1. Универсальный класс для данных дорог на уровне
     [System.Serializable]
-    public class Level1DataCar
+    public class RoadLevelData
     {
         public int id;
         public string imageRoad_1; // путь к изображению дороги (лево)
         public string imageRoad_2; // путь к изображению дороги (центр)
         public string imageRoad_3; // путь к изображению дороги (право)
+        public string imageRoad_4; // путь к изображению дороги (дорога за забором)
         public string description; // комментарий
-
     }
 
+    // 2. Универсальная обёртка для базы данных уровня
     [System.Serializable]
-    public class Level1DatabaseCar
+    public class RoadLevelDatabase
     {
-        public List<Level1DataCar> level1; // Список всех уровней (обновлено)
+        // Эти свойства нужны для совместимости, если в JSON ключи называются "level1" или "level2"
+        [JsonProperty("level1")]
+        private List<RoadLevelData> Level1Setter { set => levelsRoad = value; }
+
+        [JsonProperty("level2")]
+        private List<RoadLevelData> Level2Setter { set => levelsRoad = value; }
+
+        // Основной список, куда в итоге попадают данные
+        [JsonProperty("levelsRoad")]
+        public List<RoadLevelData> levelsRoad { get; set; } = new List<RoadLevelData>();
     }
 
-    protected IEnumerator LoadLevel_1_Data()
+    // Хранилища для загруженных данных разных уровней
+    public RoadLevelDatabase level1Database;
+    public RoadLevelDatabase level2Database;
+
+    // Универсальный метод загрузки данных из JSON
+    private IEnumerator LoadLevelData(string fileName, System.Action<RoadLevelDatabase> callback)
     {
-        string filePath = Path.Combine(Application.streamingAssetsPath, "level1.json");
+        string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
 
         #if UNITY_EDITOR || UNITY_STANDALONE
                 filePath = "file://" + filePath;
         #elif UNITY_ANDROID
-                    filePath = "jar:file://" + Application.dataPath + "!/assets/level1.json";
+                        filePath = "jar:file://" + Application.dataPath + "!/assets/" + fileName;
         #endif
 
         using (UnityWebRequest request = UnityWebRequest.Get(filePath))
@@ -308,25 +320,39 @@ public class MODEL_WORLD : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError("Ошибка загрузки: " + request.error);
+                Debug.LogError($"Ошибка загрузки {fileName}: " + request.error);
                 yield break;
             }
 
             string jsonData = request.downloadHandler.text;
-            level1Database = JsonConvert.DeserializeObject<Level1DatabaseCar>(jsonData);
+            RoadLevelDatabase db = JsonConvert.DeserializeObject<RoadLevelDatabase>(jsonData);
+
+            // Возвращаем результат через callback
+            callback?.Invoke(db);
         }
     }
 
-    public Level1DataCar GetLevel1ById(int id) // Имя метода обновлено
+    // Метод для запуска загрузки (вызывай его на старте игры)
+    public void InitAllLevelsLoading()
     {
-        // Ищем уровень по ID в списке
-        return level1Database.level1.Find(v => v.id == id);
+        StartCoroutine(LoadLevelData("level1.json", result => level1Database = result));
+        StartCoroutine(LoadLevelData("level2.json", result => level2Database = result));
     }
 
-    public List<Level1DataCar> GetAllLevel1() // Имя метода обновлено
+    // --- УНИВЕРСАЛЬНЫЕ МЕТОДЫ ПОЛУЧЕНИЯ ДАННЫХ ---
+
+    // Поиск конкретного элемента по ID в нужной базе данных
+    // Пример вызова: RoadLevelData data = GetRoadDataById(level1Database, 2);
+    public RoadLevelData GetRoadDataById(RoadLevelDatabase database, int id)
     {
-        // Возвращаем весь список уровней
-        return level1Database.level1;
+        return database?.levelsRoad?.Find(v => v.id == id);
+    }
+
+    // Получение всего списка дорог из нужной базы данных
+    // Пример вызова: List<RoadLevelData> allRoads = GetAllRoads(level1Database);
+    public List<RoadLevelData> GetAllRoads(RoadLevelDatabase database)
+    {
+        return database?.levelsRoad;
     }
 
     //public IEnumerator Download()
@@ -406,11 +432,11 @@ public class MODEL_WORLD : MonoBehaviour
 
         DownloadLane(3);
 
-        yield return StartCoroutine(LoadLevel_1_Data());
+        yield return StartCoroutine(LoadLevelData("level1.json", result => level1Database = result)); ;
 
         DownloadLane(4);
 
-
+        yield return StartCoroutine(LoadLevelData("level2.json", result => level2Database = result)); ;
 
         DownloadLane(5);
 

@@ -6,6 +6,8 @@ public class Architecture : MonoBehaviour
     // Singleton
     public static Architecture Instance { get; private set; }
 
+    public int activeNumberLevel = 1; // номер запущенного уровня
+
     [Header("Менеджеры")]
     [SerializeField] private RoadManager roadManager;
     [SerializeField] private BonusManager bonusManager;
@@ -36,6 +38,7 @@ public class Architecture : MonoBehaviour
         if (roadManager == null)
             roadManager = GetComponent<RoadManager>();
         roadManager.Initialize();
+        roadManager.architecture = this;
 
         // Инициализация менеджера бонусов
         if (bonusManager == null)
@@ -55,7 +58,7 @@ public class Architecture : MonoBehaviour
 
     public void SpawnStartRoad()
     {
-        int randomRoad = 1;
+        int randomRoad = 1; // тип первой дороги (прямая)
 
         // Создаем первую дорогу
         GameObject firstRoad = roadManager.CreateRoad(new Vector2(0, 0), roadManager.roadsPack.transform);

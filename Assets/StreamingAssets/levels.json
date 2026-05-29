@@ -5,21 +5,21 @@
         "currency": 0,
         "purchase": true,
         "purchase_car": true,
-        "imageFence": "Level1/забор_лес"
+        "imageFence": "Level1/забор_пляж"
       },
       {
         "id": 1,
         "currency": 20,
         "purchase": false,
         "purchase_car": false,
-        "imageFence": "Level1/забор_сказка"
+        "imageFence": "Level1/забор_лес"
       },
       {
         "id": 2,
         "currency": 100,
         "purchase": false,
         "purchase_car": false,
-        "imageFence": "Level1/забор_лес"
+        "imageFence": "Level1/забор_пляж"
       },
       {
         "id": 3,
