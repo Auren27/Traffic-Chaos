@@ -32,6 +32,8 @@ public class E_Car : MonoBehaviour
     public float originalSpeed;
     private bool hasSavedSpeed = false;
 
+    private bool flagtryActivateAgain = false;
+
     private void Awake()
     {
         if (Random.Range(0, 2) == 0) // определяем в какую сторону движется машина
@@ -77,9 +79,17 @@ public class E_Car : MonoBehaviour
         // ПРОВЕРКА: Если прямо сейчас на нашей полосе рядом есть движущаяся машина — стоим!
         if (IsMovingCarNearby())
         {
-            // Перезапускаем корутину ожидания
-            StartCoroutine(WaitAndTryActivateAgain());
-            return;
+            if (!flagtryActivateAgain)
+            {
+                flagtryActivateAgain = true;
+                // Перезапускаем корутину ожидания
+                StartCoroutine(WaitAndTryActivateAgain());
+                return;
+            }
+            else 
+            {
+                HandleRouteCompleted();
+            }
         }
 
         // Если путь чист — активируем
