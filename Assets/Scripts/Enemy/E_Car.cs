@@ -20,12 +20,16 @@ public class E_Car : MonoBehaviour
     // Добавим переменную для отслеживания, инициализирована ли машина
     [SerializeField] private bool isInitialized = false;
 
-    [Header("Настройки предотвращения столкновений")]
-    [SerializeField] private float rayDistance = 6.0f;     // Дистанция, на которой машина замечает препятствие
-    [SerializeField] private float safeDistance = 4.0f;    // Минимальная безопасная дистанция до передней машины
-    [SerializeField] private LayerMask enemyLayer;         // Слой, на котором находятся машины (Enemy)
+    [Header("Настройки траектории и дистанции")]
+    [SerializeField] private float minSafeDistance = 1.2f;   // Минимальный зазор между центрами машин в пробке
+    [SerializeField] private float reactionTime = 0.4f;      // Влияние скорости на тормозной путь
+    [SerializeField] private float scanRadius = 3.0f;        // Радиус поиска машин впереди по траектории
+    [SerializeField] private LayerMask enemyLayer;
 
-    private float originalSpeed;                           // Здесь сохраним начальную скорость машины
+    // Эти переменные оставляем для внутренних расчетов, убираем [SerializeField]
+    private float rayDistance;
+    private float safeDistance;
+    public float originalSpeed;
     private bool hasSavedSpeed = false;
 
     private void Awake()
@@ -67,56 +71,58 @@ public class E_Car : MonoBehaviour
 
     public void ActivateEnemy()
     {
+        // Если машина уже едет, ничего делать не нужно
+        if (isActive) return;
+
+        // ПРОВЕРКА: Если прямо сейчас на нашей полосе рядом есть движущаяся машина — стоим!
+        if (IsMovingCarNearby())
+        {
+            // Перезапускаем корутину ожидания
+            StartCoroutine(WaitAndTryActivateAgain());
+            return;
+        }
+
+        // Если путь чист — активируем
         isActive = true;
+
         if (isInitialized && isActive && currentTargetPosition == Vector3.zero)
         {
             NextWaypoint();
         }
     }
 
-    // Метод для обновления точек маршрута
-    //public void UpdateWaypoints()
-    //{
-    //    List<GameObject> newWaypoints = GetWaypointsForDirection();
+    private IEnumerator WaitAndTryActivateAgain()
+    {
+        // Ждем 0.15 секунды и пробуем снова
+        yield return new WaitForSeconds(0.15f);
+        ActivateEnemy();
+    }
 
-    //    if (newWaypoints == null || newWaypoints.Count == 0)
-    //    {
-    //        HandleRouteCompleted();
-    //        return;
-    //    }
+    private bool IsMovingCarNearby()
+    {
+        Vector2 myPosition = new Vector2(transform.position.x, transform.position.y);
 
-    //    waypoints = newWaypoints;
+        // Берем увеличенный радиус (minSafeDistance * 2.5f), чтобы машина точно успела проехать мимо нас
+        float checkRadius = minSafeDistance * 2.5f;
+        Collider2D[] nearbyCars = Physics2D.OverlapCircleAll(myPosition, checkRadius, enemyLayer);
 
-    //    if (flag_up)
-    //    {
-    //        // Для машин ВВЕРХ: массив сдвинулся назад, уменьшаем индекс на 4
-    //        currentWaypointIndex -= 4;
+        foreach (Collider2D carCollider in nearbyCars)
+        {
+            if (carCollider.gameObject != this.gameObject)
+            {
+                E_Car otherCar = carCollider.GetComponent<E_Car>();
 
-    //        if (currentWaypointIndex < 0)
-    //        {
-    //            currentWaypointIndex = 0;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        // Для машин ВНИЗ: из-за реверса массива новые точки встали в НАЧАЛО.
-    //        // Физическая точка сместилась вперед по индексу, поэтому УВЕЛИЧИВАЕМ индекс на 4.
-    //        currentWaypointIndex += 4;
-    //    }
-
-    //    // Проверяем, чтобы индекс не вылетел за пределы новой длины массива
-    //    if (currentWaypointIndex >= 0 && currentWaypointIndex < waypoints.Count)
-    //    {
-    //        if (waypoints[currentWaypointIndex] != null)
-    //        {
-    //            currentTargetPosition = waypoints[currentWaypointIndex].transform.position;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        HandleRouteCompleted();
-    //    }
-    //}
+                // Если машина рядом АКТИВНА и движется в ТУ ЖЕ сторону (флаг совпадает)
+                if (otherCar != null && otherCar.isActive && otherCar.flag_up == this.flag_up)
+                {
+                    // Нам не важен вектор сближения. Если попутная активная машина находится 
+                    // в радиусе нашей позиции — мы обязаны подождать, пока она уедет вперед!
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public void UpdateWaypoints()
     {
@@ -414,17 +420,12 @@ public class E_Car : MonoBehaviour
 
         if (!isActive || !isInitialized) return;
 
-        // 1. Проверяем дистанцию до передних машин и корректируем скорость
-        AvoidCollisions();
-
         // Проверяем, что у нас есть валидная целевая точка
-        if (currentWaypointIndex >= waypoints.Count || currentWaypointIndex < 0 ||
-            waypoints[currentWaypointIndex] == null)
+        if (currentWaypointIndex >= waypoints.Count || currentWaypointIndex < 0 || waypoints[currentWaypointIndex] == null)
         {
             // Пытаемся найти новую точку
             currentWaypointIndex = FindNearestWaypointIndex();
-            if (currentWaypointIndex >= 0 && currentWaypointIndex < waypoints.Count &&
-                waypoints[currentWaypointIndex] != null)
+            if (currentWaypointIndex >= 0 && currentWaypointIndex < waypoints.Count && waypoints[currentWaypointIndex] != null)
             {
                 currentTargetPosition = waypoints[currentWaypointIndex].transform.position;
             }
@@ -435,6 +436,9 @@ public class E_Car : MonoBehaviour
                 return;
             }
         }
+
+        // Проверяем дистанцию до передних машин и корректируем скорость
+        AvoidCollisionsAlongPath();
 
         // Движение к точке
         transform.position = Vector3.MoveTowards(
@@ -540,60 +544,83 @@ public class E_Car : MonoBehaviour
         return "Неизвестно (возможно HandleRouteCompleted)";
     }
 
-    private void AvoidCollisions()
+    private void AvoidCollisionsAlongPath()
     {
-        Vector2 direction = transform.up;
-        Vector2 myPosition = new Vector2(transform.position.x, transform.position.y);
+        // Рассчитываем динамическую безопасную дистанцию торможения от текущей скорости
+        safeDistance = minSafeDistance + (moveSpeed * reactionTime);
 
-        // Смещаем старт проверки чуть вперед
-        Vector2 rayStart = myPosition + direction * 0.5f;
+        Vector2 myPosition = transform.position;
 
-        // Временно выключаем свой коллайдер
-        Collider2D myCollider = GetComponent<Collider2D>();
-        if (myCollider != null) myCollider.enabled = false;
+        // Находим все машины в радиусе сканирования
+        Collider2D[] hitCars = Physics2D.OverlapCircleAll(myPosition, scanRadius, enemyLayer);
 
-        // ИСПОЛЬЗУЕМ CIRCLECAST вместо обычного Raycast. 
-        // Радиус 0.4f создает "толстый" луч шириной с машину, который не теряет цель на поворотах.
-        RaycastHit2D hit = Physics2D.CircleCast(rayStart, 0.4f, direction, rayDistance, enemyLayer);
+        E_Car carToFollow = null;
+        float minDistanceToTargetCar = float.MaxValue;
 
-        // Включаем коллайдер обратно
-        if (myCollider != null) myCollider.enabled = true;
-
-        // Рисуем линию для отладки
-        Debug.DrawRay(rayStart, direction * rayDistance, hit.collider != null ? Color.red : Color.green);
-
-        if (hit.collider != null)
+        foreach (Collider2D col in hitCars)
         {
-            E_Car frontCar = hit.collider.GetComponent<E_Car>();
+            if (col.gameObject == this.gameObject) continue;
 
-            if (frontCar != null && frontCar != this)
+            E_Car otherCar = col.GetComponent<E_Car>();
+
+            // Нас интересуют только активные попутные машины на той же трассе
+            if (otherCar != null && otherCar.isActive && otherCar.flag_up == this.flag_up)
             {
-                // Считаем точное расстояние между центрами машин для защиты от слияния
-                float absoluteDistance = Vector2.Distance(myPosition, new Vector2(frontCar.transform.position.x, frontCar.transform.position.y));
+                // Проверяем положение по Waypoints: машина впереди должна иметь индекс точки 
+                // равный нашему ИЛИ быть на следующие точки впереди.
+                int indexDiff = otherCar.currentWaypointIndex - this.currentWaypointIndex;
 
-                // КРИТИЧЕСКАЯ ПРОВЕРКА: Если мы ОЧЕНЬ близко (наехали или почти наехали)
-                if (absoluteDistance <= safeDistance)
+                // Обработка зацикливания (если одна машина уже на 0-й точке, а мы на последней)
+                if (indexDiff < -waypoints.Count / 2) indexDiff += waypoints.Count;
+                if (indexDiff > waypoints.Count / 2) indexDiff -= waypoints.Count;
+
+                // Если машина делит с нами целевую точку или едет к следующей — она официально ПЕРЕР НАМИ
+                if (indexDiff >= 0)
                 {
-                    // Жестко приравниваем скорость. Если передняя машина замедлилась на повороте, 
-                    // мы мгновенно сбрасываем скорость без Lerp, чтобы не въехать по инерции.
-                    moveSpeed = frontCar.moveSpeed;
-
-                    // Дополнительный барьер: если дистанция критическая, принудительно притормаживаем сильнее передней
-                    if (absoluteDistance < safeDistance * 0.8f)
+                    float dist = Vector2.Distance(myPosition, otherCar.transform.position);
+                    if (dist < minDistanceToTargetCar)
                     {
-                        moveSpeed = frontCar.moveSpeed * 0.5f;
+                        minDistanceToTargetCar = dist;
+                        carToFollow = otherCar;
                     }
                 }
-                else
-                {
-                    // Если мы еще на безопасном расстоянии, но догоняем — плавно подстраиваемся (коэффициент увеличен до 12f для резкости)
-                    moveSpeed = Mathf.Lerp(moveSpeed, frontCar.moveSpeed, Time.deltaTime * 12f);
-                }
-                return; // Препятствие обработано, выходим
             }
         }
 
-        // Если впереди никого нет — плавно возвращаем исходную скорость
+        // Если перед нами по траектории обнаружена машина
+        if (carToFollow != null)
+        {
+            // Ориентируемся строго на текущую скорость лидера
+            float targetSpeed = carToFollow.moveSpeed;
+
+            if (minDistanceToTargetCar <= safeDistance)
+            {
+                // Если дистанция критическая (внутри радиуса поворота) или лидер стоит
+                if (minDistanceToTargetCar < safeDistance * 0.75f || targetSpeed <= 0.1f)
+                {
+                    moveSpeed = 0f; // Полный стоп, чтобы не въехать в зад или бок на вираже
+                }
+                else
+                {
+                    // Идеально копируем скорость переднего на повороте
+                    moveSpeed = targetSpeed;
+                }
+            }
+            else
+            {
+                // Заблаговременное плавное притормаживание по Lerp при приближении
+                moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, Time.deltaTime * 10f);
+            }
+
+            // Барьер безопасности: не ехать быстрее лидера, если мы в зоне контроля
+            if (moveSpeed > carToFollow.moveSpeed && minDistanceToTargetCar < safeDistance)
+            {
+                moveSpeed = carToFollow.moveSpeed;
+            }
+            return;
+        }
+
+        // Если траектория впереди чистая — плавно возвращаем оригинальную скорость
         if (hasSavedSpeed)
         {
             moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, Time.deltaTime * 3f);

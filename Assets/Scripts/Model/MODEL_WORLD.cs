@@ -408,25 +408,25 @@ public class MODEL_WORLD : MonoBehaviour
     {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        yield return StartCoroutine(DownloadVehicleDataFromServer()); /// загрузка онлайн данных
+        //yield return StartCoroutine(DownloadVehicleDataFromServer()); /// загрузка онлайн данных
 
-        if (!online_json) /// загрузка онлайн данных повторно
-        {
-            online_json = true;
-            yield return StartCoroutine(DownloadVehicleDataFromServer()); /// загрузка онлайн данных
-        }
+        //if (!online_json) /// загрузка онлайн данных повторно
+        //{
+        //    online_json = true;
+        //    yield return StartCoroutine(DownloadVehicleDataFromServer()); /// загрузка онлайн данных
+        //}
 
-        DownloadLane(1);
+        //DownloadLane(1);
 
-        if (!online_json) /// загрузка офлайн данных
-        {
+        //if (!online_json) /// загрузка офлайн данных
+        //{
 
             yield return StartCoroutine(LoadVehicleDataCar());
             SetupVehicleUICar();
 
             DownloadLane(2);
 
-        }
+        //}
         ////////////////////////////////////////////////////////////////////////////////////////////////
         yield return StartCoroutine(LoadLevelDataCar());
 
