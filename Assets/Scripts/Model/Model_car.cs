@@ -251,8 +251,8 @@ public class Model_car : MonoBehaviour
                     Strip[i].sprite = sprite_strip[mmm];
                     break;
                 case 1://управляемость
-                    mmin = 1;
-                    mmax = 7;
+                    mmin = 150;
+                    mmax = 250;
                     m = 0 + ((model.GetVehicleByIdCar(car_id).rotationSpeed - mmin) / (mmax - mmin) * (14 - 0));
                     mm = (int)m;
                     Strip[i].sprite = sprite_strip[mm];
