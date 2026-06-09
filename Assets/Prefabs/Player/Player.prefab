@@ -347,7 +347,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3991563447482466711}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7418c18b1ad970a44848c7d3e5011f42, type: 3}
   m_Name: 
@@ -369,7 +369,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7663641656932626455
 RectTransform:
   m_ObjectHideFlags: 0
@@ -508,8 +508,8 @@ GameObject:
   - component: {fileID: 4527958209574149886}
   - component: {fileID: 1401380380821528967}
   - component: {fileID: 4124767331418707281}
-  - component: {fileID: 984717335577207434}
   - component: {fileID: 6519385882964519064}
+  - component: {fileID: 2991392036653182760}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Player
@@ -630,7 +630,20 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000014901161, y: -0.082045496}
   m_Size: {x: 2.4326048, y: 5.5397997}
   m_Direction: 0
---- !u!50 &984717335577207434
+--- !u!114 &6519385882964519064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6308000771692103743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c32b37fd12d71459d3bb0c5c83e309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1001612624199984345}
+--- !u!50 &2991392036653182760
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -656,20 +669,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!114 &6519385882964519064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6308000771692103743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42c32b37fd12d71459d3bb0c5c83e309, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 1001612624199984345}
+  m_Constraints: 0
 --- !u!1 &6465350834524071911
 GameObject:
   m_ObjectHideFlags: 0
@@ -729,13 +729,11 @@ MonoBehaviour:
   steeringWheelUI: {fileID: 0}
   GasPedal: {fileID: 0}
   StopPedal: {fileID: 0}
-  invertSteering: 1
   id: 1
   speed: 1
   active_speed: 1
+  rotationSpeed: 180
   sprite_obj: {fileID: 6308000771692103743}
-  min_rotate: -40
-  max_rotate: 40
   maxSteeringInput: 1
   steeringDeadZone: 0.1
   wheelToCarRatio: 2

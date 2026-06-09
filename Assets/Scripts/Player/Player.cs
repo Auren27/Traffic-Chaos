@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private bool GasFlag = false;
     public EventTrigger StopPedal;
 
-    [SerializeField] private bool invertSteering = true; // Инверсия управления (включена по умолчанию)
+    private bool invertSteering = false; // Инверсия управления
 
     [SerializeField] private int id;
 
@@ -46,10 +46,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float active_speed = 1; // скорость от 0 до 10
 
     private float turnInput;
-    private float rotationSpeed;
+    [SerializeField] private float rotationSpeed = 180f; // Базовая скорость поворота (градусы в секунду)
     public GameObject sprite_obj;
-    [SerializeField] private float min_rotate;
-    [SerializeField] private float max_rotate;
+    private float min_rotate = -30f; // Ограничение поворота колес (вправо)
+    private float max_rotate = 30f;  // Ограничение поворота колес (влево)
 
     // Параметры для рулевого управления
     [SerializeField] private float maxSteeringInput = 1f; // Максимальное значение поворота
@@ -67,12 +67,21 @@ public class Player : MonoBehaviour
     [SerializeField] private float petrol_rashod; // время через которое сбрасывается 1 еденица бензина
     private float timer = 0f;
 
-    private bool flag_ground = false;// если мы были на траве и переходим на дорогу
+    private bool flag_ground = false;// если мы были на траве и переходим на дорогуя
+
+    private SpriteRenderer spriteRenderer;
+    private int groundLayerMask;
 
     private void Awake()
     {
-        GameManager.Instance.hp.Hp(hp);//берем в скрипте MenuController ссылку на скрипт HP, в котором вызываем функцию отображения жизней
 
+        if (sprite_obj != null)
+            spriteRenderer = sprite_obj.GetComponent<SpriteRenderer>();
+
+        // Кэшируем маску слоя (работает гораздо быстрее целочисленный сдвиг битов)
+        groundLayerMask = LayerMask.GetMask("Ground");
+
+        GameManager.Instance.hp.Hp(hp);//берем в скрипте MenuController ссылку на скрипт HP, в котором вызываем функцию отображения жизней
         id = MODEL_WORLD.Instance.active_car_id;
     }
 
@@ -104,14 +113,17 @@ public class Player : MonoBehaviour
 
     public void Characteristics()
     {
-        speed_min = MODEL_WORLD.Instance.GetVehicleByIdCar(id).speed_min;
-        speed_max = MODEL_WORLD.Instance.GetVehicleByIdCar(id).speed_max;
-        grounded_speed_min = MODEL_WORLD.Instance.GetVehicleByIdCar(id).grounded_speed_min;
-        grounded_speed_max = MODEL_WORLD.Instance.GetVehicleByIdCar(id).grounded_speed_max;
-        transfer_time = MODEL_WORLD.Instance.GetVehicleByIdCar(id).transfer_time;
-        rotationSpeed = MODEL_WORLD.Instance.GetVehicleByIdCar(id).rotationSpeed;
-        petrol_rashod = MODEL_WORLD.Instance.GetVehicleByIdCar(id).petrol_rashod;
-        sprite_obj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(MODEL_WORLD.Instance.GetVehicleByIdCar(id).imagePath);
+        var carData = MODEL_WORLD.Instance.GetVehicleByIdCar(id);
+        if (carData == null) return;
+
+        speed_min = carData.speed_min;
+        speed_max = carData.speed_max;
+        grounded_speed_min = carData.grounded_speed_min;
+        grounded_speed_max = carData.grounded_speed_max;
+        transfer_time = carData.transfer_time;
+        rotationSpeed = carData.rotationSpeed;
+        petrol_rashod = carData.petrol_rashod;
+        spriteRenderer.sprite = Resources.Load<Sprite>(carData.imagePath);
     }
 
     public void Active_Game(bool active)
@@ -144,73 +156,109 @@ public class Player : MonoBehaviour
             steeringWheelUI.SetActive(currentControlMode == ControlMode.SteeringWheel);
     }
 
-    private void LateUpdate()
+    private void Update()
     {
-        if (active_game)
+        if (!active_game) return;
+
+        // Ввод газа (Клавиатура W)
+        if (Input.GetKey(KeyCode.Space)) { GasFlag = true; }
+        if (Input.GetKeyUp(KeyCode.Space)) { GasFlag = false; }
+
+        // Расчет направления поворота
+        UpdateTurnInput();
+
+        // Поворот физического тела машины
+        RotateCarBody();
+
+        // Визуальный поворот колес/спрайта
+        RotateSpriteVisual();
+
+        // Движение вперед
+        UpMoving();
+
+        // Набор/Сброс скорости
+        UpdateSpeedInterpolation();
+
+        // Бензин
+        UpdatePetrol();
+    }
+
+    private void UpdateTurnInput()
+    {
+        float targetInput = 0f;
+
+        // 1. Проверяем клавиатуру (A/D)
+        float keyboardInput = Input.GetAxisRaw("Horizontal"); // A = -1, D = 1
+
+        if (Mathf.Abs(keyboardInput) > 0.01f)
         {
-            if (Input.GetKey(KeyCode.Space)) { GasFlag = true; /*Debug.Log("Space");*/ }
-            if (Input.GetKeyUp(KeyCode.Space)) { GasFlag = false; }
-
-            UpMoving();
-
-            // Управление в зависимости от выбранного режима
-            //bool isControlling = false;
-
+            // Нажата клавиатура: в Unity 2D (ось Z) поворот ВЛЕВО — это плюс, ВПРАВО — минус.
+            // При нажатии A (-1) мы хотим ехать влево (+1), поэтому меняем знак.
+            targetInput = -keyboardInput;
+        }
+        else
+        {
+            // 2. Клавиатура не нажата — проверяем выбранный мобильный UI
             switch (currentControlMode)
             {
                 case ControlMode.Joystick:
-                    MoveCarWithJoystick();
+                    if (joystick != null && joystickUI != null && joystickUI.activeSelf)
+                    {
+                        if (invertSteering) targetInput = joystick.Horizontal;
+                        else targetInput = -joystick.Horizontal;
+                    }
                     break;
 
                 case ControlMode.SteeringWheel:
-                    MoveCarWithSteeringWheel();
+                    if (steeringWheel != null && steeringWheelUI != null && steeringWheelUI.activeSelf)
+                    {
+                        float rawInput = GetSteeringInputWithRotations();
+                        if (invertSteering) rawInput = -rawInput;
+                        if (Mathf.Abs(rawInput) < steeringDeadZone) rawInput = 0f;
+                        targetInput = rawInput;
+                    }
                     break;
             }
-
-            // Ускорение/замедление в зависимости от управления
-            if (GasFlag)
-            {
-                speed_timer += Time.deltaTime;
-                if (speed_timer >= transfer_time)
-                {
-                    if (active_speed < 10) active_speed += 0.5f;
-                    Interpolizion_speed();
-                    speed_timer = 0f;
-                }
-
-                //подсветка педали (затемнение)
-                GasPedal.gameObject.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
-            }
-            else
-            {
-                speed_timer -= Time.deltaTime;
-                if (speed_timer <= 0)
-                {
-                    if (active_speed > 0) active_speed -= 0.5f;
-                    Interpolizion_speed();
-                    speed_timer = transfer_time;
-                }
-
-                //подсветка педали (возвращаем)
-                GasPedal.gameObject.GetComponent<Image>().color = Color.white;
-            }
-
-            // Расход бензина
-            timer += Time.deltaTime;
-            if (timer >= petrol_rashod)
-            {
-                petrol -= 1;
-                GameManager.Instance.hp.Petrol(petrol);
-                if (petrol == 0) GameManager.Instance.Dead_car();
-                timer = 0f;
-            }
-
         }
+
+        // Единое плавное сглаживание для ЛЮБОГО типа ввода (убирает «эффект льда» и резкие рывки)
+        currentSteeringValue = Mathf.Lerp(currentSteeringValue, targetInput, steeringSmoothSpeed * Time.deltaTime);
+        turnInput = currentSteeringValue;
+    }
+
+    private void RotateCarBody()
+    {
+        // Если машина стоит на месте, она не должна разворачиваться
+        if (active_speed <= 0.1f) return;
+
+        float currentMovingSpeed = IsGrounded() ? grounded_speed : speed;
+        float speedFactor = Mathf.Clamp(1f - (currentMovingSpeed / speed_max * 0.3f), 0.7f, 1f);
+
+        // Переводим ввод в угол вращения. 
+        // Добавлено умножение на Mathf.Sign(active_speed), чтобы при движении назад (если добавишь) реверсировался руль.
+        float rotationAmount = turnInput * rotationSpeed * speedFactor * Time.deltaTime;
+
+        transform.Rotate(0, 0, rotationAmount);
+    }
+
+    private void RotateSpriteVisual()
+    {
+        if (sprite_obj == null) return;
+
+        // Плавный наклон колес/спрайта относительно текущего turnInput
+        // turnInput меняется от -1 (вправо) до 1 (влево)
+        float targetRotation = turnInput * max_rotate;
+
+        sprite_obj.transform.localRotation = Quaternion.Lerp(
+            sprite_obj.transform.localRotation,
+            Quaternion.Euler(0, 0, targetRotation),
+            Time.deltaTime * 12f
+        );
     }
 
     private void UpMoving()
     {
-        // Движение вперед/назад (одинаково для обоих режимов)
+        // Движение строго вперед относительно ориентации машины
         if (IsGrounded())
         {
             Vector3 moveDirection = transform.up * grounded_speed * Time.deltaTime;
@@ -230,90 +278,59 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void UpdateSpeedInterpolation()
+    {
+        if (GasFlag)
+        {
+            speed_timer += Time.deltaTime;
+            if (speed_timer >= transfer_time)
+            {
+                if (active_speed < 10) active_speed += 0.5f;
+                Interpolizion_speed();
+                speed_timer = 0f;
+            }
+            if (GasPedal != null) GasPedal.gameObject.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
+        }
+        else
+        {
+            speed_timer -= Time.deltaTime;
+            if (speed_timer <= 0)
+            {
+                if (active_speed > 0) active_speed -= 0.5f;
+                Interpolizion_speed();
+                speed_timer = transfer_time;
+            }
+            if (GasPedal != null) GasPedal.gameObject.GetComponent<Image>().color = Color.white;
+        }
+    }
+
+    private void UpdatePetrol()
+    {
+        timer += Time.deltaTime;
+        if (timer >= petrol_rashod)
+        {
+            petrol -= 1;
+            GameManager.Instance.hp.Petrol(petrol);
+            if (petrol == 0) GameManager.Instance.Dead_car();
+            timer = 0f;
+        }
+    }
+
     private void Interpolizion_speed()
     {
         speed = speed_min + (active_speed / 10 * (speed_max - speed_min));
         grounded_speed = grounded_speed_min + (active_speed / 10 * (grounded_speed_max - grounded_speed_min));
     }
 
-    // Метод для управления с помощью джойстика
-    private void MoveCarWithJoystick()
-    {
-        if (joystick == null || joystickUI == null || !joystickUI.activeSelf)
-            return;
-
-        // Получаем ввод от джойстика
-        turnInput = joystick.Horizontal;
-
-        // Поворот спрайта автомобиля
-        float targetRotation = max_rotate + ((min_rotate - max_rotate) / (1 + 1)) * (turnInput + 1);
-        sprite_obj.transform.rotation = Quaternion.Lerp(
-            sprite_obj.transform.rotation,
-            Quaternion.Euler(0, 0, targetRotation),
-            Time.deltaTime * 11f
-        );
-
-        // Двигаемся вправо/влево
-        Vector3 turnDirection = transform.right * turnInput * rotationSpeed * Time.deltaTime;
-        transform.position += turnDirection;
-    }
-
-    // Метод для управления с помощью руля
-    private void MoveCarWithSteeringWheel()
-    {
-        if (steeringWheel == null || steeringWheelUI == null || !steeringWheelUI.activeSelf)
-            return;
-
-        // Получаем нормализованный ввод от руля (-1 до 1) с учетом оборотов
-        float rawInput = GetSteeringInputWithRotations();
-
-        // Применяем инверсию если нужно
-        if (invertSteering)
-        {
-            rawInput = -rawInput;
-        }
-
-        // Применяем мертвую зону
-        if (Mathf.Abs(rawInput) < steeringDeadZone)
-        {
-            rawInput = 0f;
-        }
-
-        // Плавное изменение значения поворота
-        currentSteeringValue = Mathf.Lerp(currentSteeringValue, rawInput, steeringSmoothSpeed * Time.deltaTime);
-        turnInput = currentSteeringValue;
-
-        // Поворот спрайта автомобиля
-        float targetRotation = max_rotate + ((min_rotate - max_rotate) / (1 + 1)) * (turnInput + 1);
-        sprite_obj.transform.rotation = Quaternion.Lerp(
-            sprite_obj.transform.rotation,
-            Quaternion.Euler(0, 0, targetRotation),
-            Time.deltaTime * 11f
-        );
-
-        // Движение вправо/влево с учетом коэффициента передачи и скорости
-        float speedFactor = Mathf.Clamp(1f - (speed / speed_max * 0.5f), 0.5f, 1f);
-        float effectiveRatio = wheelToCarRatio * speedFactor;
-
-        Vector3 turnDirection = transform.right * turnInput * rotationSpeed * effectiveRatio * Time.deltaTime;
-        transform.position += turnDirection;
-    }
-
-    // метод для получения ввода от рулевого колеса с учетом оборотов
     private float GetSteeringInputWithRotations()
     {
         if (steeringWheel == null) return 0f;
 
-        // Используем общее вращение (totalRotation) вместо текущего угла
         float totalRotation = steeringWheel.GetTotalRotation();
-
-        // Получаем максимальный возможный угол поворота (в градусах)
         float maxTotalRotation = steeringWheel.maxRotations * 360f;
+        if (maxTotalRotation == 0) return 0f;
 
-        // Нормализуем от -1 до 1
         float normalizedInput = Mathf.Clamp(totalRotation / maxTotalRotation, -1f, 1f);
-
-        // Применяем кривую отклика для более точного управления в центре
         float steeringResponse = 0f;
 
         if (normalizedInput >= 0)
@@ -330,9 +347,9 @@ public class Player : MonoBehaviour
 
     bool IsGrounded()
     {
-        float groundCheckDistance = 1f;
-        LayerMask groundLayer = LayerMask.GetMask("Ground");
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, groundCheckDistance, groundLayer);
+        float groundCheckDistance = 0.5f;
+        // Исправлено: пускаем луч по направлению КУЗОВА (transform.up), а не глобально вверх (Vector2.up)
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, groundCheckDistance, groundLayerMask);
         return hit.collider != null;
     }
 
@@ -342,7 +359,7 @@ public class Player : MonoBehaviour
         if (hp > 0)
         {
             GameManager.Instance.hp.Hp(hp);
-            sprite_obj.GetComponent<SpriteRenderer>().color = Color.red;
+            spriteRenderer.color = Color.red;
             StartCoroutine(Red_Color());
         }
         else if (hp == 0)
@@ -355,7 +372,7 @@ public class Player : MonoBehaviour
     IEnumerator Red_Color()
     {
         yield return new WaitForSeconds(0.3f);
-        sprite_obj.GetComponent<SpriteRenderer>().color = Color.white;
+        spriteRenderer.color = Color.white;
     }
 
     public void PetrolAdd(int count)
@@ -366,24 +383,4 @@ public class Player : MonoBehaviour
             GameManager.Instance.hp.Petrol(petrol);
         }
     }
-
-    //// Метод для получения текущего ввода (может пригодиться для UI)
-    //public float GetCurrentSteeringInput()
-    //{
-    //    return turnInput;
-    //}
-
-    //// Метод для получения текущего режима управления
-    //public ControlMode GetCurrentControlMode()
-    //{
-    //    return currentControlMode;
-    //}
-
-    //// Метод для получения количества оборотов руля (для отладки)
-    //public int GetSteeringWheelRotations()
-    //{
-    //    if (steeringWheel != null)
-    //        return steeringWheel.GetFullRotations();
-    //    return 0;
-    //}
 }
