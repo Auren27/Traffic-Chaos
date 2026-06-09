@@ -22,14 +22,15 @@ public class UIManager : MonoBehaviour
     [Header("Меню выбора уровней")]
     public GameObject levels_menu;//1
     public Button levels_menu_menu;
-    public Sprite Sprite_Button;
-    public Sprite Sprite_Buttonlock;
-    public GameObject[] levels_bac;// изображение фона (флажок выбора уровня)
+    //public Sprite Sprite_Button;
+    //public Sprite Sprite_Buttonlock;
+    //public GameObject[] levels_bac;// изображение фона (флажок выбора уровня)
     public Button levels_1;
     public Button levels_2;
-    public Button levels_3;
-    public Button levels_4;
-    public Button levels_5;
+    public Image[] levels_Imagelock;
+    //public Button levels_3;
+    //public Button levels_4;
+    //public Button levels_5;
 
     [Header("Меню паузы")]
     public GameObject pause_menu;//2
@@ -136,8 +137,8 @@ public class UIManager : MonoBehaviour
         first_start_menu_menu.onClick.AddListener(() => GameManager.Instance.Start_menu());
 
         // Кнопки уровней
-        //levels_1.onClick.AddListener(Level_1_Button);
-        //levels_2.onClick.AddListener(Level_2_Button);
+        levels_1.onClick.AddListener(Level_1_Button);
+        levels_2.onClick.AddListener(Level_2_Button);
         //levels_3.onClick.AddListener(Level_3_Button);
         //levels_4.onClick.AddListener(Level_4_Button);
         //levels_5.onClick.AddListener(Level_5_Button);
@@ -181,7 +182,11 @@ public class UIManager : MonoBehaviour
     }
 
     // UI методы навигации
-    private void Levels_menu_menu() => ShowTab(1);
+    private void Levels_menu_menu()
+    {
+        Level_lock();
+        ShowTab(1);
+    }
     private void Levels_menu_button() => ShowTab(0);
     private void Cars_menu_menu() 
     {
@@ -202,53 +207,36 @@ public class UIManager : MonoBehaviour
     // Методы уровней
     private void Level_1_Button()
     {
-        // загрузка сцены
-        //GameManager.Instance.New_Level(0);
+        Architecture.Instance.activeNumberLevel = 1;
+        GameManager.Instance.Menu_Button();
     }
 
     private void Level_2_Button()
     {
-        if (DataManager.Instance.menu_km >= 20)
+        if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(1).currency)
         {
-            //GameManager.Instance.New_Level(1);
+            Architecture.Instance.activeNumberLevel = 2;
+            GameManager.Instance.Menu_Button();
         }
     }
 
     private void Level_3_Button()
     {
-        if (DataManager.Instance.menu_km >= 100)
-        {
-            //GameManager.Instance.New_Level(2);
-        }
+        
     }
 
-    private void Level_4_Button()
-    {
-        //GameManager.Instance.New_Level(3);
-    }
-
-    private void Level_5_Button()
-    {
-        //GameManager.Instance.New_Level(4);
-    }
 
     public void Level_lock()
     {
-        for (int i = 0; i < levels_bac.Length; i++)
+        for (int i = 0; i < levels_Imagelock.Length; i++)
         {
             switch (i)
             {
-                case 1:
+                case 0://2
                     if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(1).currency)
-                        levels_2.GetComponent<Image>().sprite = Sprite_Button;
+                        levels_Imagelock[i].gameObject.SetActive(false);
                     else
-                        levels_2.GetComponent<Image>().sprite = Sprite_Buttonlock;
-                    break;
-                case 2:
-                    if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(2).currency)
-                        levels_3.GetComponent<Image>().sprite = Sprite_Button;
-                    else
-                        levels_3.GetComponent<Image>().sprite = Sprite_Buttonlock;
+                        levels_Imagelock[i].gameObject.SetActive(true);
                     break;
             }
         }

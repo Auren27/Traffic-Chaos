@@ -6,8 +6,6 @@ public class Architecture : MonoBehaviour
     // Singleton
     public static Architecture Instance { get; private set; }
 
-    public int activeNumberLevel = 1; // номер запущенного уровня
-
     [Header("Менеджеры")]
     [SerializeField] private RoadManager roadManager;
     [SerializeField] private BonusManager bonusManager;
@@ -18,6 +16,7 @@ public class Architecture : MonoBehaviour
     private int maxRoadNumber = 11;
     private int passedRoads = 0;
     private bool delSpawnFlag = false;
+    public int activeNumberLevel = 1; // номер запущенного уровня
 
     private void Awake()
     {
@@ -147,7 +146,6 @@ public class Architecture : MonoBehaviour
         }
     }
 
-    // В методе ReplaceOldestRoad уберите сдвиг машин
     private void ReplaceOldestRoad(int currentRoadType)
     {
         int oldestRoadIndex = 0;

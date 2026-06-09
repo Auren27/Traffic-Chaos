@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private bool active_game = false;
 
-    public enum ControlMode { SteeringWheel, Joystick }
+    public enum ControlMode { Joystick, SteeringWheel }
     public ControlMode currentControlMode = ControlMode.SteeringWheel;
 
     public Joystick joystick;

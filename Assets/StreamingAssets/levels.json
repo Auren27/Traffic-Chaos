@@ -9,7 +9,7 @@
       },
       {
         "id": 1,
-        "currency": 20,
+        "currency": 0,
         "purchase": false,
         "purchase_car": false,
         "imageFence": "Level1/забор_лес"
