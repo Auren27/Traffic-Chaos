@@ -536,7 +536,7 @@ public class E_Car : MonoBehaviour
     void OnDestroy()
     {
         
-        Debug.Log($"Машина {number_car} уничтожена. Причина: {GetDestroyReason()}");
+        //Debug.Log($"Машина {number_car} уничтожена. Причина: {GetDestroyReason()}");
     }
 
     private string GetDestroyReason()

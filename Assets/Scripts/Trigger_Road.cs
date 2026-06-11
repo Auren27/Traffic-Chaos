@@ -17,6 +17,7 @@ public class Trigger_Road : MonoBehaviour
         {
             Architecture.Instance.SpawnNewRoad(r_c.type_road);
             DataManager.Instance.KMAdd();
+            Destroy(this);
         }
     }
 }

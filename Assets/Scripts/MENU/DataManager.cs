@@ -8,7 +8,7 @@ public class DataManager : MonoBehaviour
 
     // Игровые данные
     public string[] scenesToLoad;
-    public int scene_active = 0;
+    //public int scene_active = 0;
 
     [Header("Валюты")]
     public int menu_coin = 0;
@@ -35,6 +35,10 @@ public class DataManager : MonoBehaviour
         km += 0.1f;
         menu_km += 0.1f;
         UIManager.Instance.UpdateCurrencyDisplay();
+
+        decimal kmDecimal = (decimal)km;
+        if (kmDecimal % 10 == 0)
+            HP.Instance.LevelLane((int)kmDecimal);
     }
 
     public void CoinAdd(int count)

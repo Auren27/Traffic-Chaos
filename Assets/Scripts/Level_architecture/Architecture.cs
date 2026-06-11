@@ -78,7 +78,8 @@ public class Architecture : MonoBehaviour
         // Создаем остальные дороги
         for (int i = 0; i < maxRoadNumber - 1; i++)
         {
-            randomRoad = roadManager.GetRandomRoad(roadManager.GetRoadComponentAt(i).type_road);
+            if (i == 0) randomRoad = 1;
+            else randomRoad = roadManager.GetRandomRoad(roadManager.GetRoadComponentAt(i).type_road);
 
             Vector2 nextPosition = roadManager.GetNextRoadPosition(i);
             GameObject newRoad = roadManager.CreateRoad(nextPosition, roadManager.roadsPack.transform);

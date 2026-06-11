@@ -6,7 +6,8 @@ public class Player_Spawn : MonoBehaviour
 {
     public GameObject car;
     [SerializeField] public GameObject spawn_point;
-    [SerializeField] public GameObject my_camera;
+    [SerializeField] public Camera_Follow my_camera;
+    [SerializeField] public Smoke smoke;
     public GameObject wheel; // ссылка на руль
     public Joystick joystick; // ссылка на джойстик
     public GameObject joystickUI;
@@ -35,7 +36,10 @@ public class Player_Spawn : MonoBehaviour
         player.GetComponent<Player>().OptionsTriggers();
         player.GetComponent<Player>().SetControlMode(currentControlMode);
 
-        my_camera.GetComponent<Camera_Follow>().target = player.GetComponent<Player>().sprite_obj.transform;
+        my_camera.target = player.GetComponent<Player>().sprite_obj.transform;
+
+        smoke.target = player.GetComponent<Player>().sprite_obj.transform;
+        smoke.StartPosition();
     }
 
     public void Destroy_car()

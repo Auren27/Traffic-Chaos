@@ -82,7 +82,7 @@ public class RoadManager : MonoBehaviour
             return;
 
         // Заборы
-        string fencePath = MODEL_WORLD.Instance.GetLevelsById(DataManager.Instance.scene_active).imageFence;
+        string fencePath = MODEL_WORLD.Instance.GetLevelsById(Architecture.Instance.activeNumberLevel - 1).imageFence;
         Sprite fenceSprite = GetCachedSprite(fencePath, 0);
 
         foreach (var fence in roadComponents[roadIndex].fence)
@@ -135,6 +135,8 @@ public class RoadManager : MonoBehaviour
         SetupRoadTexture(roadComponents[roadIndex].background[11], levelData.imageRoad_4, 0);
         SetupRoadTexture(roadComponents[roadIndex].background[12], levelData.imageRoad_4, 1);
         SetupRoadTexture(roadComponents[roadIndex].background[13], levelData.imageRoad_4, 0);
+
+        //SetupRoadTexture(roadComponents[roadIndex].background[13], levelData.imageRoad_4, 0);
     }
 
     private void SetupRoadTexture(GameObject background, string texturePath, int spriteIndex)
