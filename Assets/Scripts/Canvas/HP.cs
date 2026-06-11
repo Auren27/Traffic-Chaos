@@ -53,7 +53,7 @@ public class HP : MonoBehaviour
         petrol.sprite = sprite_petrol[p];
     }
 
-    public void LevelLane(float i)
+    public int LevelLane(float i)
     {
         if (i < mmax)
         {
@@ -64,7 +64,10 @@ public class HP : MonoBehaviour
             if (sprite_strip != null && m < sprite_strip.Length)
             {
                 Strip.sprite = sprite_strip[m];
+                return m;
             }
         }
+
+        return 0;
     }
 }

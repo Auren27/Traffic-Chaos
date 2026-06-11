@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class SpawnMeal : MonoBehaviour
 {
-    //public Player player;
+    public bool activeMeal = false;
 
     [Header("Настройки спавна")]
     [SerializeField] private GameObject[] prefabsToSpawn; // Массив префабов, которые будут спавниться
     private float spawnInterval = 0.5f;   // Интервал между спавном (в секундах)
 
     [Header("Границы по горизонтали")]
-    [SerializeField] private float minX = -8f;            // Левая граница спавна
-    [SerializeField] private float maxX = 8f;             // Правая граница спавна
+    private float minX = -8f;            // Левая граница спавна
+    private float maxX = 8f;             // Правая граница спавна
 
     private float timer;
 
     [Header("Массив хранения")]
     private int maxObjectsCount = 30;    // Вынес размер в инспектор для удобства
-    [SerializeField] private GameObject[] MassObject;
+    private GameObject[] MassObject;
     private int currentIndex = 0;                         // Индекс для циклической перезаписи
 
     private void Awake()
@@ -26,9 +26,19 @@ public class SpawnMeal : MonoBehaviour
         MassObject = new GameObject[maxObjectsCount];
     }
 
+    public void Stage1()
+    {
+        spawnInterval = 2.0f;
+    }
+
+    public void Stage2()
+    {
+        spawnInterval = 0.5f;
+    }
+
     void Update()
     {
-        if (GameManager.Instance.active_game)
+        if (GameManager.Instance.active_game && activeMeal)
         {
             timer += Time.deltaTime;
 

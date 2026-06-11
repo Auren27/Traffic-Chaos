@@ -36,7 +36,10 @@ public class DataManager : MonoBehaviour
         menu_km += 0.1f;
         UIManager.Instance.UpdateCurrencyDisplay();
 
-        HP.Instance.LevelLane(km);
+        int i = HP.Instance.LevelLane(km);
+
+        if (i == 10) GameManager.Instance.Stage2();
+        if (i == 19) GameManager.Instance.Stage3();
     }
 
     public void CoinAdd(int count)

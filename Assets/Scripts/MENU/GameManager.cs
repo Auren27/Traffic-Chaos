@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
         hp.Petrol(10);
 
         player_spawn.player.GetComponent<Player>().Active_Game(true);
+
+        Stage1();
     }
 
     public void PauseGame()
@@ -107,4 +109,18 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(DataManager.Instance.scenesToLoad[level_number], LoadSceneMode.Additive);
     }
 
+    public void Stage1()
+    {
+        player_spawn.ActivSpawnMeal1();
+    }
+
+    public void Stage2()
+    {
+        player_spawn.ActivSpawnMeal2();
+    }
+
+    public void Stage3()
+    {
+        player_spawn.OffSpawnMeal();
+    }
 }

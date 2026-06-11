@@ -41,6 +41,26 @@ public class Player_Spawn : MonoBehaviour
 
         smoke.target = player.GetComponent<Player>().sprite_obj.transform;
         smoke.StartPosition();
+
+        spawnMeal.activeMeal = false;
+    }
+
+    public void ActivSpawnMeal1()
+    {
+        spawnMeal.activeMeal = true;
+        spawnMeal.Stage1();
+    }
+
+    public void ActivSpawnMeal2()
+    {
+        spawnMeal.activeMeal = true;
+        spawnMeal.Stage2();
+    }
+
+    public void OffSpawnMeal()
+    {
+        spawnMeal.activeMeal = false;
+        Destroy_meal();
     }
 
     public void Destroy_car()

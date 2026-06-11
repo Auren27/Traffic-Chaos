@@ -4,35 +4,34 @@ using UnityEngine;
 
 public class Smoke : MonoBehaviour
 {
-    public Transform target; // Объект, за которым следим (игрок)
-    public float smoothSpeed = 1f; // Скорость сглаживания
+    public Transform target;
+    [Tooltip("Скорость подъема")]
+    public float smoothSpeed = 5f;
+    [Tooltip("Смещение от игрока по Y")]
+    public float yOffset = -8f;
 
-    private float lastTargetY; // Переменная для хранения позиции игрока в прошлом кадре
-    private bool isLocked = false; // Флаг блокировки движения
+    private bool isLocked = false;
     private Vector3 startPosition;
 
     void Start()
     {
         startPosition = transform.position;
-
-        if (target != null)
-        {
-            lastTargetY = target.position.y;
-        }
     }
 
     void LateUpdate()
     {
-        if (target != null && !isLocked) // Двигаем только если не заблокирован
-        {
-            if (target.position.y > lastTargetY)
-            {
-                Vector3 desiredPosition = new Vector3(0, target.position.y - 8, 0);
-                Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-                transform.position = smoothedPosition;
+        if (target == null || isLocked) return;
 
-                lastTargetY = target.position.y;
-            }
+        // Вычисляем желаемую позицию (где должен быть дым относительно игрока)
+        float targetY = target.position.y + yOffset;
+
+        // УСЛОВИЕ: Двигаемся только если цель выше текущего положения дыма
+        if (targetY > transform.position.y)
+        {
+            Vector3 desiredPosition = new Vector3(0, targetY, 0);
+
+            // Двигаемся вверх
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         }
     }
 

@@ -17,6 +17,18 @@ public class Player_Zone : MonoBehaviour
         }
     }
 
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Meal"))
+    //    {
+    //        Meal meal = collision.gameObject.transform.parent.GetComponent<Meal>();
+    //        if (meal != null)
+    //        {
+    //            meal.Evaporate();
+    //        }
+    //    }
+    //}
+
 
     //private void OnTriggerExit2D(Collider2D collision)
     //{

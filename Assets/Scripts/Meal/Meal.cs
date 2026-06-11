@@ -13,6 +13,9 @@ public class Meal : MonoBehaviour
     [Header("Настройки спрайтов")]
     [SerializeField] private Sprite[] SpriteMeal;
 
+    [Header("Удаление объекта")]
+    [SerializeField] private float destroyYThreshold = -6f; // Координата Y, ниже которой объект удаляется
+
     private void Awake()
     {
         RandomMeal();
@@ -34,5 +37,15 @@ public class Meal : MonoBehaviour
         // Space.Self крутит объект относительно его собственного центра
         transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime, Space.Self);
 
+        // 3. Оптимизация: удаляем объект, если он улетел за нижний экран
+        if (transform.position.y < destroyYThreshold)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void Evaporate()
+    {
+        Destroy(gameObject);
     }
 }
