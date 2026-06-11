@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
     {
         player_spawn.Destroy_car();
         player_spawn.Spawn_car();
+        player_spawn.Destroy_meal();
         UIManager.Instance.ShowTab(0);
         Time.timeScale = 1f;
         active_game = false;

@@ -27,8 +27,12 @@ public class Player_touch : MonoBehaviour
         }
         if (collision.CompareTag("Petrol"))
         {
-            Debug.Log("бензин");
             player.GetComponent<Player>().PetrolAdd(1);
+            collision.gameObject.GetComponent<Coin>().CoinDestroy();
+        }
+        if (collision.CompareTag("Meal"))
+        {
+            player.GetComponent<Player>().AddHp();
             collision.gameObject.GetComponent<Coin>().CoinDestroy();
         }
     }

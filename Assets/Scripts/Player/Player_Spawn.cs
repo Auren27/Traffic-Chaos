@@ -8,6 +8,7 @@ public class Player_Spawn : MonoBehaviour
     [SerializeField] public GameObject spawn_point;
     [SerializeField] public Camera_Follow my_camera;
     [SerializeField] public Smoke smoke;
+    public SpawnMeal spawnMeal;
     public GameObject wheel; // ссылка на руль
     public Joystick joystick; // ссылка на джойстик
     public GameObject joystickUI;
@@ -45,5 +46,10 @@ public class Player_Spawn : MonoBehaviour
     public void Destroy_car()
     {
         Destroy(player);
+    }
+
+    public void Destroy_meal()
+    {
+        spawnMeal.OFFMassMeal();
     }
 }

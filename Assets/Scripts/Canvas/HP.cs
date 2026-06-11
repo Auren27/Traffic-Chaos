@@ -22,7 +22,16 @@ public class HP : MonoBehaviour
 
     // диапазон км
     int mmin = 0;
-    int mmax = 20;
+    int mmax = 10;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 
     public void Hp(int h)
     {
@@ -44,13 +53,18 @@ public class HP : MonoBehaviour
         petrol.sprite = sprite_petrol[p];
     }
 
-    public void LevelLane(int i)
+    public void LevelLane(float i)
     {
         if (i < mmax)
         {
-            Debug.Log("LevelLane = " + i);
-            int m = 0 + ((i - mmin) / (mmax - mmin) * (19 - 0));
-            Strip.sprite = sprite_strip[m];
+            float progress = (i - mmin) / (mmax - mmin);
+
+            int m = Mathf.Clamp((int)(progress * 19), 0, 19);
+
+            if (sprite_strip != null && m < sprite_strip.Length)
+            {
+                Strip.sprite = sprite_strip[m];
+            }
         }
     }
 }

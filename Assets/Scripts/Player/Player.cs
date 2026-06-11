@@ -356,6 +356,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void AddHp()
+    {
+        if (hp < 3)
+        {
+            hp += 1;
+            GameManager.Instance.hp.Hp(hp);
+        }
+    }
+
     private IEnumerator Red_Color()
     {
         yield return new WaitForSeconds(0.3f);

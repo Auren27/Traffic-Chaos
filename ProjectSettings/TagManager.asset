@@ -16,6 +16,7 @@ TagManager:
   - Petrol
   - Ground
   - Road
+  - Meal
   layers:
   - Default
   - TransparentFX

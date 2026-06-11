@@ -36,9 +36,7 @@ public class DataManager : MonoBehaviour
         menu_km += 0.1f;
         UIManager.Instance.UpdateCurrencyDisplay();
 
-        decimal kmDecimal = (decimal)km;
-        if (kmDecimal % 10 == 0)
-            HP.Instance.LevelLane((int)kmDecimal);
+        HP.Instance.LevelLane(km);
     }
 
     public void CoinAdd(int count)
@@ -83,6 +81,7 @@ public class DataManager : MonoBehaviour
         crystal = 0;
         km = 0;
         UIManager.Instance.UpdateCurrencyDisplay();
+        HP.Instance.LevelLane(km);
     }
 
     public void Levels_Download()
