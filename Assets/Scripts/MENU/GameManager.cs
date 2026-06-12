@@ -15,6 +15,10 @@ public class GameManager : MonoBehaviour
     [Header("Game State")]
     public bool active_game = false;
 
+    private bool stage1 = false;
+    private bool stage2 = false;
+    private bool stage3 = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -111,16 +115,29 @@ public class GameManager : MonoBehaviour
 
     public void Stage1()
     {
-        player_spawn.ActivSpawnMeal1();
+        if(stage1 == false)
+        {
+            player_spawn.ActivSpawnMeal1();
+            stage1 = true;
+        }
     }
 
     public void Stage2()
     {
-        player_spawn.ActivSpawnMeal2();
+        if (stage2 == false)
+        {
+            player_spawn.ActivSpawnMeal2();
+            stage2 = true;
+        }
     }
 
     public void Stage3()
     {
-        player_spawn.OffSpawnMeal();
+        if (stage3 == false)
+        {
+            player_spawn.OffSpawnMeal();
+            player_spawn.ActivNLO();
+            stage3 = true;
+        }
     }
 }

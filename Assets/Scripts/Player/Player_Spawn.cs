@@ -9,6 +9,7 @@ public class Player_Spawn : MonoBehaviour
     [SerializeField] public Camera_Follow my_camera;
     [SerializeField] public Smoke smoke;
     public SpawnMeal spawnMeal;
+    public Spawn_NLO spawnNlo;
     public GameObject wheel; // ссылка на руль
     public Joystick joystick; // ссылка на джойстик
     public GameObject joystickUI;
@@ -43,6 +44,7 @@ public class Player_Spawn : MonoBehaviour
         smoke.StartPosition();
 
         spawnMeal.activeMeal = false;
+
     }
 
     public void ActivSpawnMeal1()
@@ -61,6 +63,11 @@ public class Player_Spawn : MonoBehaviour
     {
         spawnMeal.activeMeal = false;
         Destroy_meal();
+    }
+
+    public void ActivNLO()
+    {
+        spawnNlo.Spawn_nlo(player.GetComponent<Player>().sprite_obj.transform);
     }
 
     public void Destroy_car()
