@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Spawn_NLO : MonoBehaviour
 {
+    public Transform target;
     public GameObject nloPrefabs;
-    [SerializeField] public GameObject spawn_point;
 
     public GameObject nlo;
 
     public void Spawn_nlo(Transform target)
     {
-        nlo = Instantiate(nloPrefabs, spawn_point.transform.position, Quaternion.identity, gameObject.transform);
+        float targetY = target.transform.position.y + 10f;
+        Vector3 desiredPosition = new Vector3(target.transform.position.x, targetY, target.transform.position.z);
+
+        nlo = Instantiate(nloPrefabs, desiredPosition, Quaternion.identity, gameObject.transform);
         nlo.GetComponent<NLO_Move>().target = target;
     }
 

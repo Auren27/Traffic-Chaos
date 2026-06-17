@@ -45,6 +45,7 @@ public class Player_Spawn : MonoBehaviour
 
         spawnMeal.activeMeal = false;
 
+        spawnNlo.target = player.GetComponent<Player>().sprite_obj.transform;
     }
 
     public void ActivSpawnMeal1()
