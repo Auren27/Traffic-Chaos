@@ -9,6 +9,7 @@ public class Architecture : MonoBehaviour
     [Header("Менеджеры")]
     [SerializeField] private RoadManager roadManager;
     [SerializeField] private BonusManager bonusManager;
+    [SerializeField] private BoosterManager boosterManager;
     [SerializeField] private EnemyWaypointManager enemyWaypointManager;
     [SerializeField] private EnemyCarManager enemyCarManager;  // Добавлен новый менеджер
 
@@ -44,6 +45,11 @@ public class Architecture : MonoBehaviour
             bonusManager = GetComponent<BonusManager>();
         bonusManager.Initialize(maxRoadNumber);
 
+        // Инициализация менеджера бустеров
+        if (boosterManager == null)
+            boosterManager = GetComponent<BoosterManager>();
+        boosterManager.Initialize(maxRoadNumber);
+
         // Инициализация менеджера точек противников
         if (enemyWaypointManager == null)
             enemyWaypointManager = GetComponent<EnemyWaypointManager>();
@@ -66,6 +72,8 @@ public class Architecture : MonoBehaviour
         // Настраиваем бонусы для первой дороги
         bonusManager.SpawnBonusesForRoad(0, roadManager.GetRoadComponentAt(0));
 
+        boosterManager.SpawnBoostersForRoad(0, roadManager.GetRoadComponentAt(0));
+
         //// Настраиваем машины для первой дороги
         //enemyCarManager.SpawnCarsForRoad(0, roadManager.GetRoadComponentAt(0));  // Новый вызов
 
@@ -86,7 +94,8 @@ public class Architecture : MonoBehaviour
 
             roadManager.SetupRoad(i + 1, randomRoad, newRoad);
             bonusManager.SpawnBonusesForRoad(i + 1, roadManager.GetRoadComponentAt(i + 1));
-            if(i>2)
+            boosterManager.SpawnBoostersForRoad(i + 1, roadManager.GetRoadComponentAt(i + 1));
+            if (i>2)
             {
                 // Спавним машины для новой дороги
                 enemyCarManager.SpawnCarsForRoad(i + 1, roadManager.GetRoadComponentAt(i + 1));  // Новый вызов
@@ -155,6 +164,7 @@ public class Architecture : MonoBehaviour
         // Удаляем старую дорогу
         roadManager.DestroyRoad(oldestRoadIndex);
         bonusManager.ClearBonusesForRoad(oldestRoadIndex);
+        boosterManager.ClearBoostersForRoad(oldestRoadIndex);
 
         // ВАЖНО: НЕ удаляем машины и НЕ сдвигаем их массив
         // enemyCarManager.ClearCarsForRoad(oldestRoadIndex); - ЗАКОММЕНТИРОВАТЬ
@@ -168,6 +178,7 @@ public class Architecture : MonoBehaviour
         // Сдвигаем только дороги, бонусы и точки
         roadManager.ShiftRoadsArray();
         bonusManager.ShiftBonusesArray();
+        boosterManager.ShiftBoostersArray();
         enemyWaypointManager.ShiftPointsLists();
 
         // ВАЖНО: НЕ сдвигаем массив машин!
@@ -176,6 +187,7 @@ public class Architecture : MonoBehaviour
         // Настраиваем новую дорогу
         roadManager.SetupRoad(newestRoadIndex, randomRoad, newRoad);
         bonusManager.SpawnBonusesForRoad(newestRoadIndex, roadManager.GetRoadComponentAt(newestRoadIndex));
+        boosterManager.SpawnBoostersForRoad(newestRoadIndex, roadManager.GetRoadComponentAt(newestRoadIndex));
 
         // Спавним машины для новой дороги
         enemyCarManager.SpawnCarsForRoad(newestRoadIndex, roadManager.GetRoadComponentAt(newestRoadIndex));
@@ -251,6 +263,7 @@ public class Architecture : MonoBehaviour
     {
         roadManager.UnloadAllRoads();
         bonusManager.UnloadAllBonuses();
+        boosterManager.UnloadAllBoosters();
         enemyCarManager.UnloadAllCars();  // Новый вызов
         enemyWaypointManager.UnloadAllEnemies();
 
@@ -261,6 +274,7 @@ public class Architecture : MonoBehaviour
     // Методы для получения информации
     public RoadManager GetRoadManager() => roadManager;
     public BonusManager GetBonusManager() => bonusManager;
+    public BoosterManager GetBoosterManager() => boosterManager;
     public EnemyWaypointManager GetEnemyWaypointManager() => enemyWaypointManager;
     public EnemyCarManager GetEnemyCarManager() => enemyCarManager;  // Новый метод
 

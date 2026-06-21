@@ -379,4 +379,28 @@ public class Player : MonoBehaviour
             GameManager.Instance.hp.Petrol(petrol);
         }
     }
+
+    // Универсальный метод для запуска временного эффекта
+    // System.Action — это ссылка на метод (функцию), которую мы хотим передать
+    public void ApplyTimedBooster(System.Action startEffect, System.Action endEffect, float duration)
+    {
+        StartCoroutine(BoosterTimerCoroutine(startEffect, endEffect, duration));
+    }
+
+    private IEnumerator BoosterTimerCoroutine(System.Action startEffect, System.Action endEffect, float duration)
+    {
+        // 1. Запускаем начальный эффект бустера (например, увеличиваем скорость)
+        startEffect?.Invoke();
+
+        // 2. Ждем заданное количество секунд (например, 15)
+        yield return new WaitForSeconds(duration);
+
+        // 3. Вызываем обратную функцию (например, возвращаем скорость назад)
+        endEffect?.Invoke();
+    }
+
+    public void BoostInverted()
+    {
+        invertSteering = !invertSteering;
+    }
 }

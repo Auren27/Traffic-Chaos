@@ -20,6 +20,7 @@ public class SpawnMeal : MonoBehaviour
     private int maxObjectsCount = 30;    // Вынес размер в инспектор для удобства
     private GameObject[] MassObject;
     private int currentIndex = 0;                         // Индекс для циклической перезаписи
+    private bool bombflag = false;
 
     private void Awake()
     {
@@ -29,11 +30,13 @@ public class SpawnMeal : MonoBehaviour
     public void Stage1()
     {
         spawnInterval = 2.0f;
+        bombflag = false;
     }
 
     public void Stage2()
     {
         spawnInterval = 0.5f;
+        bombflag = true;
     }
 
     void Update()
@@ -85,7 +88,9 @@ public class SpawnMeal : MonoBehaviour
         }
 
         // 3. Логика спавна объекта
-        int randomIndex = Random.Range(0, prefabsToSpawn.Length);
+        int randomIndex = 0;
+        if (bombflag) randomIndex = Random.Range(0, prefabsToSpawn.Length);
+
         GameObject prefab = prefabsToSpawn[randomIndex];
 
         float randomX = Random.Range(minX, maxX);

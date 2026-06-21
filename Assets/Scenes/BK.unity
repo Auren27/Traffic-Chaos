@@ -4381,7 +4381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeMeal: 0
   prefabsToSpawn:
-  - {fileID: 8726395195881084134, guid: 737c17aa241734d44ad8e6ddf082832a, type: 3}
+  - {fileID: 6207397012307417394, guid: a161a2f01e5c08841b94c5a049320fc9, type: 3}
+  - {fileID: 6207397012307417394, guid: 4d3fbfd0515c2d4429843d853b0072d4, type: 3}
 --- !u!1 &228877311
 GameObject:
   m_ObjectHideFlags: 0
@@ -15710,6 +15711,7 @@ GameObject:
   - component: {fileID: 1022951535}
   - component: {fileID: 1022951539}
   - component: {fileID: 1022951538}
+  - component: {fileID: 1022951541}
   - component: {fileID: 1022951540}
   - component: {fileID: 1022951537}
   m_Layer: 0
@@ -15733,6 +15735,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadManager: {fileID: 1022951539}
   bonusManager: {fileID: 1022951538}
+  boosterManager: {fileID: 0}
   enemyWaypointManager: {fileID: 1022951537}
   enemyCarManager: {fileID: 1022951540}
   activeNumberLevel: 1
@@ -15752,6 +15755,7 @@ Transform:
   - {fileID: 467471303}
   - {fileID: 117234159}
   - {fileID: 324538201}
+  - {fileID: 1818375530}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1022951537
@@ -15825,6 +15829,30 @@ MonoBehaviour:
   activeCars: []
   carsPerRoad: 1
   carsPack: {fileID: 324538200}
+--- !u!114 &1022951541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022951534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fb2529e910821640b377c7e29d567e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boosterPrefabs:
+  - {fileID: 3669708193324990344, guid: bd22cd147ff237f45a434a2f14976f8f, type: 3}
+  boosterSprites:
+  - {fileID: 21300000, guid: ee19b37f194db814ebeaae78de68f93b, type: 3}
+  - {fileID: 21300000, guid: 9a787524de4910746a370961551af696, type: 3}
+  - {fileID: 21300000, guid: 69219e85dacc3514cb747f0a80d9d829, type: 3}
+  - {fileID: 21300000, guid: bbdf73f8c717f034e972857c1f1faabf, type: 3}
+  - {fileID: 21300000, guid: ad9266ca1a349ab409adc43dedc8f963, type: 3}
+  - {fileID: 21300000, guid: 0551a9d75804c8f4db5195709b84f93f, type: 3}
+  - {fileID: 21300000, guid: 218fbfe469b51d64ea93585d7d73482a, type: 3}
+  activeBoosters: []
+  boostersPack: {fileID: 1818375529}
 --- !u!1 &1036597788
 GameObject:
   m_ObjectHideFlags: 0
@@ -28897,6 +28925,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1815912857}
   m_CullTransparentMesh: 1
+--- !u!1 &1818375529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1818375530}
+  m_Layer: 0
+  m_Name: Boosters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1818375530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818375529}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1022951536}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1834002751
 GameObject:
   m_ObjectHideFlags: 0
