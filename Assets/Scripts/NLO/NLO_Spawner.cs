@@ -12,9 +12,16 @@ public class NLO_Spawner : MonoBehaviour
     [Header("Настройки Циклического Массива")]
     [SerializeField] private int maxObjectsCount = 30;
 
-    [Header("Настройки Пружины")]
+    [Header("Настройки Пружины (Корутиной)")]
     [SerializeField] private GameObject springPrefab; // префаб пружины
-    [SerializeField] private float springYOffset = 2f; // На сколько выше НЛО спавнить пружину
+    [SerializeField] private Sprite springSprites;
+
+    [Tooltip("На сколько ниже НЛО пружина должна приземлиться")]
+    private float dropDistanceY = 2f;
+    [Tooltip("Максимальный разброс влево/вправо от центра НЛО при падении")]
+    private float randomRangeX = 4f;
+    [Tooltip("Скорость полета пружины вниз")]
+    private float throwSpeed = 5f;
 
     private float spawnTimer;
     private GameObject[] spawnedObjects;
@@ -103,6 +110,7 @@ public class NLO_Spawner : MonoBehaviour
                 Destroy(spawnedObjects[i]);
             }
         }
+
     }
 
     public void SpawnSpringAbove()
@@ -113,10 +121,45 @@ public class NLO_Spawner : MonoBehaviour
             return;
         }
 
-        // Позиция: текущая позиция НЛО + смещение по Y вверх
-        Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + springYOffset, transform.position.z);
+        // 1. Спавним в центре НЛО
+        Vector3 startPosition = transform.position;
+        GameObject spring = Instantiate(springPrefab, startPosition, Quaternion.identity, null);
 
-        // Спавним пружину без наклона (Quaternion.identity) или со случайным, если нужно
-        GameObject spring = Instantiate(springPrefab, spawnPosition, Quaternion.identity, null);
+        // Настройка спрайта пружины
+        Booster boosterScript = spring.GetComponent<Booster>();
+        if (boosterScript != null)
+        {
+            boosterScript.SetSprite(springSprites);
+        }
+
+        // 2. Рассчитываем случайную целевую точку на дороге под НЛО
+        float randomX = Random.Range(-randomRangeX, randomRangeX);
+        Vector3 targetPosition = new Vector3(startPosition.x + randomX, startPosition.y - dropDistanceY, startPosition.z);
+
+        // 3. Запускаем плавное перемещение, аналогично твоему магниту
+        StartCoroutine(ThrowSpringRoutine(spring, targetPosition));
+    }
+
+    // Корутина плавного выброса пружины
+    private IEnumerator ThrowSpringRoutine(GameObject spring, Vector3 targetPos)
+    {
+        // Пока пружина существует (её не подобрали по дороге) и не долетела до цели
+        while (spring != null)
+        {
+            // Плавно перемещаем пружину в целевую точку
+            spring.transform.position = Vector3.MoveTowards(
+                spring.transform.position,
+                targetPos,
+                throwSpeed * Time.deltaTime
+            );
+
+            // Если прилетели на место — останавливаем корутину
+            if (Vector3.Distance(spring.transform.position, targetPos) < 0.05f)
+            {
+                yield break;
+            }
+
+            yield return null; // Ждем следующий кадр
+        }
     }
 }

@@ -15,9 +15,9 @@ public class GameManager : MonoBehaviour
     [Header("Game State")]
     public bool active_game = false;
 
-    private bool stage1 = false;
-    private bool stage2 = false;
-    private bool stage3 = false;
+    [SerializeField] private bool stage1 = false;
+    [SerializeField] private bool stage2 = false;
+    [SerializeField] private bool stage3 = false;
 
     private void Awake()
     {
@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour
     public void Menu_Button()
     {
         player_spawn.Destroy_car();
+        player_spawn.Destroy_NLO();
         player_spawn.Spawn_car();
         player_spawn.Destroy_meal();
         UIManager.Instance.ShowTab(0);
@@ -119,6 +120,8 @@ public class GameManager : MonoBehaviour
         {
             player_spawn.ActivSpawnMeal1();
             stage1 = true;
+            stage2 = false;
+            stage3 = false;
         }
     }
 
@@ -127,7 +130,9 @@ public class GameManager : MonoBehaviour
         if (stage2 == false)
         {
             player_spawn.ActivSpawnMeal2();
+            stage1 = false;
             stage2 = true;
+            stage3 = false;
         }
     }
 
@@ -137,6 +142,8 @@ public class GameManager : MonoBehaviour
         {
             player_spawn.OffSpawnMeal();
             player_spawn.ActivNLO();
+            stage1 = false;
+            stage2 = false;
             stage3 = true;
         }
     }

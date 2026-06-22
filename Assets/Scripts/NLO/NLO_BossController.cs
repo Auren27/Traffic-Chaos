@@ -50,7 +50,6 @@ public class NLO_BossController : MonoBehaviour
             moveScript.CurrentFollowSpeed = 3f;      // Менее подвижная (базовая скорость ниже)
             spawnerScript.ActiveSpawn = true;
             spawnerScript.SpawnInterval = 1.2f;      // Чуть менее активный спавн (интервал больше)
-            spawnerScript.SpawnSpringAbove(); // Спавним пружину
             yield return new WaitForSeconds(calmDuration);
 
             // === ПЕРЕХОД 1: НЛО краснеет ===
@@ -82,13 +81,16 @@ public class NLO_BossController : MonoBehaviour
             moveScript.CurrentRotationSpeed = 90f;
             moveScript.CurrentFollowSpeed = 6f;       // Активно летает за игроком
             spawnerScript.ActiveSpawn = true;
-            spawnerScript.SpawnInterval = 0.4f;       // Очень активный спавн
+            spawnerScript.SpawnInterval = 0.6f;       // Очень активный спавн
 
             yield return new WaitForSeconds(aggressiveDuration);
 
 
             // === ПЕРЕХОД 2 / СТАДИЯ 3: Уставшая ===
             Debug.Log("Стадия: Уставшая");
+
+            spawnerScript.SpawnSpringAbove(); // Спавним пружину
+
             if (ufoRenderer != null)
             {
                 for (int i = 0; i < ufoRenderer.Length; i++)
@@ -97,6 +99,7 @@ public class NLO_BossController : MonoBehaviour
                 }
             }
 
+            moveScript.CurrentFollowSpeed = 0.3f;       // Очень медленное следование.
             moveScript.CurrentRotationSpeed = 55f;    // Скорость сбавляется до 50-60
             spawnerScript.ActiveSpawn = false;        // Уставшая — не спавнит объекты под собой
 

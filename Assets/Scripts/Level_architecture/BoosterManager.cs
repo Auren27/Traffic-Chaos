@@ -12,7 +12,7 @@ public class BoosterManager : MonoBehaviour
 
     [Header("Активные бустеры")]
     [SerializeField] private GameObject[] activeBoosters;
-    private int boostersPerRoad = 2;
+    private int boostersPerRoad = 1;
 
     [Header("Папка хранения бустеров")]
     public GameObject boostersPack;
@@ -69,9 +69,12 @@ public class BoosterManager : MonoBehaviour
     {
         if (road == null) return;
 
-        for (int j = 0; j < boostersPerRoad; j++)
+        if (Random.value < 0.5f)
         {
-            SpawnBoosterOnRoad(road, roadIndex * boostersPerRoad + j);
+            for (int j = 0; j < boostersPerRoad; j++)
+            {
+                SpawnBoosterOnRoad(road, roadIndex * boostersPerRoad + j);
+            }
         }
     }
 

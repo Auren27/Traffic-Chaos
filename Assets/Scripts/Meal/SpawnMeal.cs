@@ -22,6 +22,8 @@ public class SpawnMeal : MonoBehaviour
     private int currentIndex = 0;                         // »ндекс дл€ циклической перезаписи
     private bool bombflag = false;
 
+    public GameObject PacMeal; //папка хранени€ префабов
+
     private void Awake()
     {
         MassObject = new GameObject[maxObjectsCount];
@@ -97,7 +99,7 @@ public class SpawnMeal : MonoBehaviour
         Vector3 spawnPosition = new Vector3(randomX, transform.position.y, transform.position.z);
 
         // —оздаем объект и сразу сохран€ем его в найденную €чейку массива
-        GameObject nobj = Instantiate(prefab, spawnPosition, Quaternion.identity, gameObject.transform);
+        GameObject nobj = Instantiate(prefab, spawnPosition, Quaternion.identity, PacMeal.transform);
         MassObject[spawnIndex] = nobj;
     }
 

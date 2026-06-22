@@ -19,6 +19,7 @@ TagManager:
   - Meal
   - Bomb
   - Booster
+  - NLO
   layers:
   - Default
   - TransparentFX

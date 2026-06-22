@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968b122877213ee4983b4628836180b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 6465350834524071911}
+  player: {fileID: 1001612624199984345}
 --- !u!1 &2934664811957172729
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,6 +664,51 @@ MonoBehaviour:
   steeringSmoothSpeed: 5
   petrol_rashod: 5
   tyreGrip: 1
+  jumpDuration: 5
+  maxScaleMultiplier: 1.3
+  jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.32892433
+      value: 0.973006
+      inSlope: 0.06667321
+      outSlope: 0.06667321
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5204023
+      value: 0.9592644
+      inSlope: -1.0106667
+      outSlope: -1.0106667
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.99934953
+      value: 0.0003384241
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  isFlying: 0
 --- !u!70 &6374595176297237992
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

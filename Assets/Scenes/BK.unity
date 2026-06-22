@@ -4383,6 +4383,7 @@ MonoBehaviour:
   prefabsToSpawn:
   - {fileID: 6207397012307417394, guid: a161a2f01e5c08841b94c5a049320fc9, type: 3}
   - {fileID: 6207397012307417394, guid: 4d3fbfd0515c2d4429843d853b0072d4, type: 3}
+  PacMeal: {fileID: 2044019300}
 --- !u!1 &228877311
 GameObject:
   m_ObjectHideFlags: 0
@@ -15756,6 +15757,7 @@ Transform:
   - {fileID: 117234159}
   - {fileID: 324538201}
   - {fileID: 1818375530}
+  - {fileID: 2044019301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1022951537
@@ -15845,12 +15847,8 @@ MonoBehaviour:
   - {fileID: 3669708193324990344, guid: bd22cd147ff237f45a434a2f14976f8f, type: 3}
   boosterSprites:
   - {fileID: 21300000, guid: ee19b37f194db814ebeaae78de68f93b, type: 3}
-  - {fileID: 21300000, guid: 9a787524de4910746a370961551af696, type: 3}
   - {fileID: 21300000, guid: 69219e85dacc3514cb747f0a80d9d829, type: 3}
-  - {fileID: 21300000, guid: bbdf73f8c717f034e972857c1f1faabf, type: 3}
-  - {fileID: 21300000, guid: ad9266ca1a349ab409adc43dedc8f963, type: 3}
   - {fileID: 21300000, guid: 0551a9d75804c8f4db5195709b84f93f, type: 3}
-  - {fileID: 21300000, guid: 218fbfe469b51d64ea93585d7d73482a, type: 3}
   activeBoosters: []
   boostersPack: {fileID: 1818375529}
 --- !u!1 &1036597788
@@ -32204,6 +32202,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042444552}
   m_CullTransparentMesh: 1
+--- !u!1 &2044019300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2044019301}
+  m_Layer: 0
+  m_Name: Meals
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2044019301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044019300}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.9233522, y: 41.965683, z: 55.61064}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1022951536}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2045172584
 GameObject:
   m_ObjectHideFlags: 0
@@ -33413,6 +33442,9 @@ MonoBehaviour:
   player_spawn: {fileID: 621024983}
   hp: {fileID: 120154420}
   active_game: 0
+  stage1: 0
+  stage2: 0
+  stage3: 0
 --- !u!4 &2127838833
 Transform:
   m_ObjectHideFlags: 0

@@ -76,6 +76,15 @@ public class Player_Spawn : MonoBehaviour
         Destroy(player);
     }
 
+    public void Destroy_NLO()
+    {
+        if (spawnNlo.nlo != null)
+        {
+            spawnNlo.nlo.GetComponent<NLO_Spawner>().ClearAllSpawnedObjects();
+            Destroy(spawnNlo.nlo);
+        }
+    }
+
     public void Destroy_meal()
     {
         spawnMeal.OFFMassMeal();

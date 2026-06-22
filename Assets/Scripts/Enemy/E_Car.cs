@@ -442,7 +442,7 @@ public class E_Car : MonoBehaviour
             else
             {
                 isActive = false;
-                Debug.LogWarning($"ћашина {number_car}: не удалось найти валидную точку");
+                //Debug.LogWarning($"ћашина {number_car}: не удалось найти валидную точку");
                 return;
             }
         }

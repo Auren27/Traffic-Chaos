@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -69,6 +70,25 @@ public class Player : MonoBehaviour
     [SerializeField] private float tyreGrip = 1.0f;
 
     private Vector2 currentVelocity = Vector2.zero;
+
+    [Header("НАСТРОЙКИ МАГНИТА")]
+    private float magnetRadius = 5f;       // Радиус подсасывания
+    private float magnetSpeed = 6f;       // Скорость полета бонуса к игроку
+    private bool isMagnetActive = false;                    // Флаг работы магнита
+    private Coroutine magnetCoroutine;                      // Ссылка на корутину магнита
+
+    private Dictionary<string, Coroutine> activeBoosters = new Dictionary<string, Coroutine>();
+
+    [Header("НАСТРОЙКИ ПРЫЖКА (ПРУЖИНЫ)")]
+    [SerializeField] private float jumpDuration = 5f;       // Длительность одного прыжка
+    [SerializeField] private float maxScaleMultiplier = 2f;  // Максимальное увеличение (высота полета)
+    [SerializeField] private AnimationCurve jumpCurve = AnimationCurve.EaseInOut(0, 0, 1, 0); // Кривая прыжка (парабола)
+
+    [SerializeField] private bool isFlying = false;                             // Флаг: летит ли машина сейчас
+    private Coroutine springCoroutine;
+
+    // Публичный геттер, чтобы скрипт касаний знал, летим мы или нет
+    public bool IsFlying => isFlying;
 
     private void Awake()
     {
@@ -382,25 +402,233 @@ public class Player : MonoBehaviour
 
     // Универсальный метод для запуска временного эффекта
     // System.Action — это ссылка на метод (функцию), которую мы хотим передать
-    public void ApplyTimedBooster(System.Action startEffect, System.Action endEffect, float duration)
+    public void ApplyTimedBooster(string boosterId, System.Action startEffect, System.Action endEffect, float duration)
     {
-        StartCoroutine(BoosterTimerCoroutine(startEffect, endEffect, duration));
+        // Если бустер этого типа уже работает
+        if (activeBoosters.ContainsKey(boosterId))
+        {
+            // Останавливаем старый таймер (при этом endEffect НЕ вызывается, характеристики остаются измененными)
+            if (activeBoosters[boosterId] != null)
+            {
+                StopCoroutine(activeBoosters[boosterId]);
+            }
+            activeBoosters.Remove(boosterId);
+        }
+        else
+        {
+            // Если это первое взятие бустера — активируем его эффект
+            startEffect?.Invoke();
+        }
+
+        // Запускаем новый таймер обновления
+        Coroutine newBoosterCoroutine = StartCoroutine(BoosterTimerCoroutine(boosterId, endEffect, duration));
+        activeBoosters.Add(boosterId, newBoosterCoroutine);
     }
 
-    private IEnumerator BoosterTimerCoroutine(System.Action startEffect, System.Action endEffect, float duration)
+    private IEnumerator BoosterTimerCoroutine(string boosterId, System.Action endEffect, float duration)
     {
-        // 1. Запускаем начальный эффект бустера (например, увеличиваем скорость)
-        startEffect?.Invoke();
-
-        // 2. Ждем заданное количество секунд (например, 15)
+        // Ждем положенное время
         yield return new WaitForSeconds(duration);
 
-        // 3. Вызываем обратную функцию (например, возвращаем скорость назад)
+        // Время вышло — выключаем эффект
         endEffect?.Invoke();
+
+        // Удаляем из списка активных
+        if (activeBoosters.ContainsKey(boosterId))
+        {
+            activeBoosters.Remove(boosterId);
+        }
     }
 
-    public void BoostInverted()
+    public void StartBoostInverted()
     {
-        invertSteering = !invertSteering;
+        invertSteering = true;
+        if (spriteRenderer != null) spriteRenderer.color = new Color(0.6f, 0.1f, 0.9f, 1f); // подсветим машину фиолетовым
+    }
+
+    public void EndBoostInverted()
+    {
+        invertSteering = false;
+        if (spriteRenderer != null) spriteRenderer.color = Color.white; // вернем обычный цвет
+    }
+
+    public void StartNitro()
+    {
+        speed_max *= 1.5f;
+        grounded_speed_max *= 1.5f;
+        if (spriteRenderer != null) spriteRenderer.color = new Color(0f, 0.8f, 1f, 1f); // подсветим машину синим
+        Debug.Log("Нитро активировано!");
+    }
+
+    public void EndNitro()
+    {
+        speed_max /= 1.5f;
+        grounded_speed_max /= 1.5f;
+        if (spriteRenderer != null) spriteRenderer.color = Color.white; // вернем обычный цвет
+        Debug.Log("Нитро завершилось.");
+    }
+
+    public void StartBoostBucket()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = new Color(1f, 0.5f, 0f, 1f); // подсветим машину оранжевым
+    }
+
+    public void EndBoostBucket()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = Color.white; // вернем обычный цвет
+    }
+
+    public void StartBoostMagnet()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = new Color(0.1f, 0.9f, 0.1f, 1f); // подсветим машину зеленым
+
+        if (!isMagnetActive)
+        {
+            isMagnetActive = true;
+            magnetCoroutine = StartCoroutine(MagnetRoutine());
+        }
+    }
+
+    public void EndBoostMagnet()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = Color.white; // вернем обычный цвет
+
+        isMagnetActive = false;
+        if (magnetCoroutine != null)
+        {
+            StopCoroutine(magnetCoroutine);
+            magnetCoroutine = null;
+        }
+    }
+
+    private IEnumerator MagnetRoutine()
+    {
+        // Будем собирать объекты на слое "Buns", который используется в BonusManager
+        int bonusLayerMask = LayerMask.GetMask("Buns");
+
+        while (isMagnetActive)
+        {
+            // Находим все коллайдеры в круговом диапазоне вокруг игрока
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, magnetRadius, bonusLayerMask);
+
+            foreach (Collider2D hit in hitColliders)
+            {
+                // Запускаем плавное притягивание для каждого найденного бонуса отдельно
+                if (hit != null)
+                {
+                    StartCoroutine(AttractBonusRoutine(hit.gameObject));
+                }
+            }
+
+            // Задержка проверки, чтобы не перегружать процессор каждый кадр
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator AttractBonusRoutine(GameObject bonus)
+    {
+        // Пока бонус существует и магнит активен — тянем его к игроку
+        while (bonus != null && isMagnetActive)
+        {
+            // Перемещаем бонус в позицию игрока
+            bonus.transform.position = Vector3.MoveTowards(
+                bonus.transform.position,
+                transform.position,
+                magnetSpeed * Time.deltaTime
+            );
+
+            // Если бонус подлетел достаточно близко — корутина завершается.
+            // Скрипт сбора на самом бонусе (через OnTrigerEnter или дистанцию) сработает и уничтожит объект.
+            if (Vector3.Distance(bonus.transform.position, transform.position) < 0.2f)
+            {
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    //private void OnDrawGizmosSelected()
+    //{
+    //    Gizmos.color = Color.green;
+    //    Gizmos.DrawWireSphere(transform.position, magnetRadius);
+    //}
+
+    public void StartBoostSpring()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = Color.cyan; // подсветим машину голубым
+
+        // Если корутина уже активна (повторный бустер), сбрасываем масштаб в дефолт перед новым прыжком
+        if (springCoroutine != null)
+        {
+            StopCoroutine(springCoroutine);
+        }
+
+        springCoroutine = StartCoroutine(SpringJumpRoutine());
+    }
+
+    public void EndBoostSpring()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = Color.white; // вернем обычный цвет
+
+        isFlying = false;
+        if (springCoroutine != null)
+        {
+            StopCoroutine(springCoroutine);
+            springCoroutine = null;
+        }
+
+        // Гарантированно возвращаем машине исходный размер принудительно
+        if (sprite_obj != null)
+        {
+            sprite_obj.transform.localScale = Vector3.one;
+        }
+    }
+
+    private IEnumerator SpringJumpRoutine()
+    {
+        isFlying = true;
+        float timer = 0f;
+        Vector3 baseScale = Vector3.one; // Исходный масштаб (1, 1, 1)
+
+        while (timer < jumpDuration)
+        {
+            timer += Time.deltaTime;
+            float progress = timer / jumpDuration;
+
+            // Получаем текущую "высоту" из кривой (от 0 до 1 и обратно до 0)
+            float heightValue = jumpCurve.Evaluate(progress);
+
+            // Вычисляем новый масштаб машинки
+            float currentScale = Mathf.Lerp(1f, maxScaleMultiplier, heightValue);
+
+            if (sprite_obj != null)
+            {
+                sprite_obj.transform.localScale = baseScale * currentScale;
+            }
+
+            yield return null;
+        }
+
+        // По окончании прыжка возвращаем все в исходное состояние
+        EndBoostSpring();
+    }
+
+    public void StartBoostTank()
+    {
+    }
+
+    public void EndBoostTank()
+    {
+    }
+
+    public void StartBoostShield()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, 1f); // подсветим машину серым
+    }
+
+    public void EndBoostShield()
+    {
+        if (spriteRenderer != null) spriteRenderer.color = Color.white; // вернем обычный цвет
     }
 }

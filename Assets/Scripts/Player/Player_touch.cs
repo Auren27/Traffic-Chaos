@@ -6,7 +6,7 @@ public class Player_touch : MonoBehaviour
 {
     private GameManager mc;
 
-    [SerializeField] private GameObject player;
+    [SerializeField] private Player player;
 
     private void Awake()
     {
@@ -15,6 +15,21 @@ public class Player_touch : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Если игрок в полете, полностью игнорируем опасные наземные объекты
+        if (player.IsFlying)
+        {
+            if (collision.CompareTag("Bomb"))
+            {
+                return; // Просто выходим из метода, бомба не нанесет урона и не уничтожится
+            }
+
+            // Если вы хотите, чтобы еда (Meal) тоже оставалась на земле и не бралась в полете:
+            if (collision.CompareTag("Meal"))
+            {
+                return;
+            }
+        }
+
         if (collision.CompareTag("Coin"))
         {
             DataManager.Instance.CoinAdd(1);
@@ -27,17 +42,17 @@ public class Player_touch : MonoBehaviour
         }
         if (collision.CompareTag("Petrol"))
         {
-            player.GetComponent<Player>().PetrolAdd(1);
+            player.PetrolAdd(1);
             collision.gameObject.GetComponent<Coin>().CoinDestroy();
         }
         if (collision.CompareTag("Meal"))
         {
-            player.GetComponent<Player>().AddHp();
+            player.AddHp();
             collision.gameObject.GetComponent<Coin>().CoinDestroy();
         }
         if (collision.CompareTag("Bomb"))
         {
-            player.GetComponent<Player>().Attack();
+            player.Attack();
             collision.gameObject.GetComponent<Coin>().CoinDestroy();
         }
         if (collision.CompareTag("Booster"))
@@ -56,20 +71,26 @@ public class Player_touch : MonoBehaviour
                 // Различаем логику по названию файла спрайта в Unity
                 switch (spriteName)
                 {
-                    case "инверсия": // Замените на точное имя вашего файла спрайта ускорения
-                        player.GetComponent<Player>().BoostInverted();
+                    case "инверсия":
+                        player.ApplyTimedBooster(spriteName, player.StartBoostInverted, player.EndBoostInverted, 15f);
                         break;
-                    case "ковш": // Замените на точное имя вашего файла спрайта ускорения
+                    case "ковш":
+                        player.ApplyTimedBooster(spriteName, player.StartBoostBucket, player.EndBoostBucket, 15f);
                         break;
-                    case "магнит": // Замените на точное имя вашего файла спрайта ускорения
+                    case "магнит":
+                        player.ApplyTimedBooster(spriteName, player.StartBoostMagnet, player.EndBoostMagnet, 15f);
                         break;
-                    case "пружина": // Замените на точное имя вашего файла спрайта ускорения
+                    case "пружина":
+                        player.ApplyTimedBooster(spriteName, player.StartBoostSpring, player.EndBoostSpring, 5f);
                         break;
-                    case "танк": // Замените на точное имя вашего файла спрайта ускорения
+                    case "танк":
+                        player.ApplyTimedBooster(spriteName, player.StartBoostTank, player.EndBoostTank, 15f);
                         break;
-                    case "ускорение": // Замените на точное имя вашего файла спрайта ускорения
+                    case "ускорение":
+                        player.ApplyTimedBooster(spriteName, player.StartNitro, player.EndNitro,15f);
                         break;
-                    case "щит": // Замените на точное имя вашего файла спрайта ускорения
+                    case "щит":
+                        player.ApplyTimedBooster(spriteName, player.StartBoostShield, player.EndBoostShield, 15f);
                         break;
 
                     default:
