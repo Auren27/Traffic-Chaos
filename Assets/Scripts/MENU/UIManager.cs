@@ -73,6 +73,15 @@ public class UIManager : MonoBehaviour
     public GameObject first_start_menu;//9
     public Button first_start_menu_menu;
 
+    [Header("Меню комиксов")]
+    public GameObject comic_menu;
+    public Image Slides_Image;
+    public Sprite[] Slides_0;
+    public Sprite[] Slides_1;
+    public Sprite[] Slides_2;
+    private int currentComicNumber; // Какой комикс открыт (0, 1, 2)
+    private int currentSlideIndex;  // Какая страница комикса сейчас показывается
+
     [Header("State")]
     public int currentTabIndex;
 
@@ -90,7 +99,7 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         // Инициализация массива вкладок меню
-        menuTabs = new GameObject[10];
+        menuTabs = new GameObject[11];
         menuTabs[0] = start_menu;
         menuTabs[1] = levels_menu;
         menuTabs[2] = pause_menu;
@@ -101,6 +110,7 @@ public class UIManager : MonoBehaviour
         menuTabs[7] = settings_menu;
         menuTabs[8] = donation_menu;
         menuTabs[9] = first_start_menu;
+        menuTabs[10] = comic_menu;
     }
 
     private void SetupButtonListeners()
@@ -125,16 +135,21 @@ public class UIManager : MonoBehaviour
         start_menu_button[4].onClick.AddListener(Donation_menu_menu);
         start_menu_button[5].onClick.AddListener(Donation_menu_menu);
 
+        // Меню поражения
         dead_menu_menu[0].onClick.AddListener(() => GameManager.Instance.Menu_Button());
         dead_menu_menu[1].onClick.AddListener(() => GameManager.Instance.Menu_Button());
 
+        // Меню настроек
         settings_menu_menu.onClick.AddListener(Levels_menu_button);
         settings_player_wheel.onClick.AddListener(SettingsOption_PlayerWheel);
         settings_player_joystik.onClick.AddListener(SettingsOption_PlayerJoystik);
 
+        // Меню доната
         donation_menu_menu.onClick.AddListener(Levels_menu_button);
 
         first_start_menu_menu.onClick.AddListener(() => GameManager.Instance.Start_menu());
+
+        Slides_Image.gameObject.GetComponent<Button>().onClick.AddListener(Comic_touch);
 
         // Кнопки уровней
         levels_1.onClick.AddListener(Level_1_Button);
@@ -203,12 +218,72 @@ public class UIManager : MonoBehaviour
 
     private void Donation_menu_menu() => ShowTab(8);
 
+    private void Comic_menu_Start(int number)
+    {
+        ShowTab(10);
+
+        currentComicNumber = number; // Запоминаем, какой комикс открыли
+        currentSlideIndex = 0;       // Начинаем с первого слайда
+
+        SetComicSprite(currentComicNumber, currentSlideIndex);
+    }
+
+    // Этот метод вызывается при клике/касании по экрану комикса
+    public void Comic_touch()
+    {
+        currentSlideIndex++; // Переходим к следующему слайду
+
+        // Проверяем, не закончились ли слайды в текущем комиксе
+        if (IsComicFinished(currentComicNumber, currentSlideIndex))
+        {
+            Comic_menu_End(); // Если закончились, закрываем комикс
+        }
+        else
+        {
+            // Если слайды есть, показываем следующий
+            SetComicSprite(currentComicNumber, currentSlideIndex);
+        }
+    }
+
+    // Вспомогательный метод для отображения нужного спрайта
+    private void SetComicSprite(int comicNum, int slideNum)
+    {
+        switch (comicNum)
+        {
+            case 0:
+                Slides_Image.sprite = Slides_0[slideNum];
+                break;
+            case 1:
+                Slides_Image.sprite = Slides_1[slideNum];
+                break;
+            case 2:
+                Slides_Image.sprite = Slides_2[slideNum];
+                break;
+        }
+    }
+
+    // Вспомогательный метод для проверки окончания массива слайдов
+    private bool IsComicFinished(int comicNum, int slideNum)
+    {
+        switch (comicNum)
+        {
+            case 0: return slideNum >= Slides_0.Length;
+            case 1: return slideNum >= Slides_1.Length;
+            case 2: return slideNum >= Slides_2.Length;
+            default: return true;
+        }
+    }
+
+    private void Comic_menu_End()
+    {
+        GameManager.Instance.Menu_Button();
+    }
 
     // Методы уровней
     private void Level_1_Button()
     {
         Architecture.Instance.activeNumberLevel = 1;
-        GameManager.Instance.Menu_Button();
+        Comic_menu_Start(0);
     }
 
     private void Level_2_Button()
