@@ -17,7 +17,7 @@ public class SpawnMeal : MonoBehaviour
     private float timer;
 
     [Header("Массив хранения")]
-    private int maxObjectsCount = 30;    // Вынес размер в инспектор для удобства
+    private int maxObjectsCount = 50;    // Вынес размер в инспектор для удобства
     private GameObject[] MassObject;
     private int currentIndex = 0;                         // Индекс для циклической перезаписи
     private bool bombflag = false;

@@ -13250,7 +13250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &766989571
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19660,7 +19660,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1211771579
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34176,8 +34176,23 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 139eec650a86a774d92ba8fbd87e8304, type: 3}
   - {fileID: 21300000, guid: b748e693beb179a42b9505a2610614fd, type: 3}
   - {fileID: 21300000, guid: 42625b34f15e87346bef9d91f18bb44e, type: 3}
-  Slides_1: []
-  Slides_2: []
+  Slides_1:
+  - {fileID: 21300000, guid: 65e00b59375f3944ca92fc9a8e979789, type: 3}
+  - {fileID: 21300000, guid: 9aedafb7d149b4b49af468be508bd97d, type: 3}
+  - {fileID: 21300000, guid: 9826685305a4f1749b70393b7355140d, type: 3}
+  - {fileID: 21300000, guid: d47d8c35868ee0641b1bab9ba16641f0, type: 3}
+  - {fileID: 21300000, guid: 98a82514166e2af4084af965dd786e4e, type: 3}
+  - {fileID: 21300000, guid: 4dc9610602ac88341ab35f8d485c9ea9, type: 3}
+  - {fileID: 21300000, guid: af7895c9e71e77448891e34e700e9453, type: 3}
+  - {fileID: 21300000, guid: c5eb6f7bc4a2a96479dbbc5fe8825401, type: 3}
+  - {fileID: 21300000, guid: 033a3db1945452e409532c1710f9bf17, type: 3}
+  Slides_2:
+  - {fileID: 21300000, guid: e81e2db0b1a537341a6bb8408a72aa5b, type: 3}
+  - {fileID: 21300000, guid: 884681c3730ecda4a985abfd78a8c461, type: 3}
+  - {fileID: 21300000, guid: 251fe4b125a38ba4c92e3c4e2a3c13d9, type: 3}
+  - {fileID: 21300000, guid: 0fc43ccb8dbd0a649a580e92198329ea, type: 3}
+  - {fileID: 21300000, guid: dc4ec4f678bdea446b990747a9013f04, type: 3}
+  - {fileID: 21300000, guid: 330238ebaf736a74db6acabd85718104, type: 3}
   currentTabIndex: 0
 --- !u!114 &2127838831
 MonoBehaviour:

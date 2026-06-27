@@ -22,7 +22,7 @@ public class HP : MonoBehaviour
 
     // диапазон км
     int mmin = 0;
-    int mmax = 10;
+    int mmax = 5;
 
     private void Awake()
     {

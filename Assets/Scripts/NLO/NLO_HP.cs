@@ -47,7 +47,17 @@ public class NLO_HP : MonoBehaviour
     private void BossDead()
     {
         Debug.Log("БОСС ПОВЕРЖЕН!");
-        // Здесь твоя логика: вызов экрана победы, взрыв, начисление очков и т.д.
+        switch (Architecture.Instance.activeNumberLevel)
+        {
+            case 1:
+                UIManager.Instance.Level_1_Vin();
+                break;
+            case 2:
+                UIManager.Instance.Level_2_Vin();
+                break;
+            default:
+                break;
+        }
         // GameManager.Instance.Victory();
         Destroy(gameObject);
     }

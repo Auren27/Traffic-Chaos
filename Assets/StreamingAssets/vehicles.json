@@ -190,7 +190,7 @@
         "description": "Специально настроенный для дрифта",
         "purchase_method": "castle",
         "currency": 2,
-        "purchase": false
+        "purchase": true
       },
       {
         "id": 13,

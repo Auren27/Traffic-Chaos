@@ -38,8 +38,8 @@ public class DataManager : MonoBehaviour
 
         int i = HP.Instance.LevelLane(km);
 
-        if (i == 10 /*10*/) GameManager.Instance.Stage2();
-        if (i == 19 /*19*/) GameManager.Instance.Stage3();
+        if (i == 9 /*10*/) GameManager.Instance.Stage2();
+        if (i == 18 /*19*/) GameManager.Instance.Stage3();
     }
 
     public void CoinAdd(int count)

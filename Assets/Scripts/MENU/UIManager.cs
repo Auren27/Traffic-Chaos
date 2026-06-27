@@ -286,6 +286,18 @@ public class UIManager : MonoBehaviour
         Comic_menu_Start(0);
     }
 
+    public void Level_1_Vin()
+    {
+        Architecture.Instance.activeNumberLevel = 2;
+        Comic_menu_Start(1);
+    }
+
+    public void Level_2_Vin()
+    {
+        Architecture.Instance.activeNumberLevel = 2;
+        Comic_menu_Start(2);
+    }
+
     private void Level_2_Button()
     {
         if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(1).currency)
