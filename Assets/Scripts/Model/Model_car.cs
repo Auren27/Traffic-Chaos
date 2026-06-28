@@ -239,8 +239,8 @@ public class Model_car : MonoBehaviour
             switch (i)
             {
                 case 0://скорость
-                    int mmin = 1;
-                    int mmax = 14;
+                    int mmin = 0;
+                    int mmax = 9;
                     float m = 0 + ((model.GetVehicleByIdCar(car_id).speed_max - mmin) / (mmax - mmin) * (14 - 0));
                     int mm = (int)m;
                     float mmin2 = 1;
@@ -251,15 +251,15 @@ public class Model_car : MonoBehaviour
                     Strip[i].sprite = sprite_strip[mmm];
                     break;
                 case 1://управляемость
-                    mmin = 150;
-                    mmax = 250;
+                    mmin = 190;
+                    mmax = 210;
                     m = 0 + ((model.GetVehicleByIdCar(car_id).rotationSpeed - mmin) / (mmax - mmin) * (14 - 0));
                     mm = (int)m;
                     Strip[i].sprite = sprite_strip[mm];
                     break;
                 case 2://проходимость
-                    mmin = 1;
-                    mmax = 14;
+                    mmin = 0;
+                    mmax = 9;
                     m = 0 + ((model.GetVehicleByIdCar(car_id).grounded_speed_max - mmin) / (mmax - mmin) * (14 - 0));
                     mm = (int)m;
                     Strip[i].sprite = sprite_strip[mm];

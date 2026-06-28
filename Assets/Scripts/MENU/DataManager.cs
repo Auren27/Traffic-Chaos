@@ -8,7 +8,7 @@ public class DataManager : MonoBehaviour
 
     // Игровые данные
     public string[] scenesToLoad;
-    //public int scene_active = 0;
+    public int completed_levels = 0;
 
     [Header("Валюты")]
     public int menu_coin = 0;
@@ -27,6 +27,11 @@ public class DataManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+    }
+
+    public void CompletedLevels(int number)
+    {
+        if (completed_levels < number) completed_levels = number;
     }
 
     // Методы для работы с валютой

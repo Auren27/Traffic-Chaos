@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static Player;
@@ -289,18 +290,20 @@ public class UIManager : MonoBehaviour
     public void Level_1_Vin()
     {
         Architecture.Instance.activeNumberLevel = 2;
+        DataManager.Instance.CompletedLevels(1);
         Comic_menu_Start(1);
     }
 
     public void Level_2_Vin()
     {
         Architecture.Instance.activeNumberLevel = 2;
+        DataManager.Instance.CompletedLevels(2);
         Comic_menu_Start(2);
     }
 
     private void Level_2_Button()
     {
-        if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(1).currency)
+        if (DataManager.Instance.completed_levels >= 1)
         {
             Architecture.Instance.activeNumberLevel = 2;
             GameManager.Instance.Menu_Button();
@@ -320,7 +323,11 @@ public class UIManager : MonoBehaviour
             switch (i)
             {
                 case 0://2
-                    if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(1).currency)
+                    //if (DataManager.Instance.menu_km >= MODEL_WORLD.Instance.GetLevelsById(1).currency)
+                    //    levels_Imagelock[i].gameObject.SetActive(false);
+                    //else
+                    //    levels_Imagelock[i].gameObject.SetActive(true);
+                    if (DataManager.Instance.completed_levels >= 1)
                         levels_Imagelock[i].gameObject.SetActive(false);
                     else
                         levels_Imagelock[i].gameObject.SetActive(true);
